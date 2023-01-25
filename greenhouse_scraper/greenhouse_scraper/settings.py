@@ -12,6 +12,17 @@ BOT_NAME = 'greenhouse_scraper'
 SPIDER_MODULES = ['greenhouse_scraper.spiders']
 NEWSPIDER_MODULE = 'greenhouse_scraper.spiders'
 
+SOURCE = "greenhouse"
+
+# S3_BUCKET = "levergreen-data"
+# S3_PATH = "scrapy/{bot_name}/{table_name}/{partitions}/{file_name}"
+
+S3_HTML_BUCKET = "levergreen-raw-html"
+S3_HTML_PATH = "scrapy/{source}/{bot_name}/{partitions}/{file_name}"
+
+DEFAULT_HTML = "https://blank.org"
+
+
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'greenhouse_scraper (+http://www.yourdomain.com)'
