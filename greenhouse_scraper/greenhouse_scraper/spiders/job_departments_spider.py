@@ -30,12 +30,13 @@ class JobDepartmentsSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
         self.spider_id = kwargs.pop("spider_id", 1)
         self.use_existing_html = kwargs.pop("use_existing_html", 0)
-        self.html_source = kwargs.pop("careers_page_url", "")
+        self.careers_page_url = kwargs.pop("careers_page_url", "")
+        self.html_source = self.careers_page_url[:-1] if self.careers_page_url[-1] == '/' else self.careers_page_url
         self.settings = get_project_settings()
         self.current_time = time.time()
         self.updated_at = self.current_time
         self.created_at = self.current_time
-        self.current_time_utc = datetime.utcfromtimestamp(self.current_time)
+        self.current_date_utc = datetime.utcfromtimestamp(self.current_time).strftime("%Y-%m-%d")
         self.logger.info(f"Initialized Spider, {self.html_source}")
 
     @property
@@ -66,16 +67,16 @@ class JobDepartmentsSpider(scrapy.Spider):
     def url(self):
         if self.html_file == "":
             #Remove final "/" so greenhouse_company_name is correct
-            return self.html_source[:-1] if self.html_source[-1] == '/' else self.html_source
+            return self.html_source
         else:
             return self.settings["DEFAULT_HTML"]
     
     @property
     def greenhouse_company_name(self):
-        return self.url.split("/")[-1]
+        return self.html_source.split("/")[-1]
     
     def determine_partitions(self):
-        return f"scrape_date={self.current_time_utc.strftime('%Y-%m-%d')}/company={self.greenhouse_company_name}"
+        return f"date={self.current_date_utc}/company={self.greenhouse_company_name}"
 
     def _get_uri_params(self):
         params = {}
@@ -102,7 +103,7 @@ class JobDepartmentsSpider(scrapy.Spider):
         return util.hash_ids.encode(
             self.spider_id,
             i,
-            self.current_time
+            int(self.current_time)
         )
 
     def finalize_response(self, response):
@@ -110,7 +111,7 @@ class JobDepartmentsSpider(scrapy.Spider):
             self.created_at = self.html_file["LastModified"].timestamp()
             return self.html_file["Body"].read()
         else:
-            # self.export_html(response.text)
+            self.export_html(response.text)
             return response.text
 
     def parse(self, response):
@@ -127,12 +128,13 @@ class JobDepartmentsSpider(scrapy.Spider):
             dept_loader.add_xpath("department_name", "text()")
             il.add_xpath("department_category", "//section[contains(@class, 'level')]/@class")
 
+            il.add_value("id", self.determine_row_id(i))
+            il.add_value("created_at", self.created_at)
+            il.add_value("updated_at", self.updated_at)
+
+            il.add_value("source", self.html_source)
+            il.add_value("greenhouse_company_name", self.greenhouse_company_name)
+
             yield il.load_item()
 
             # self.logger.info(f"{dep_xpath} Department here")
-  
-   
-        # filename = f'{self.greenhouse_company_name}-{self.allowed_domains[0].split(".")[1]}.html'
-        # with open(filename, 'wb') as f:
-        #     f.write(response.body)
-        # self.log(f'Saved file {filename}')
