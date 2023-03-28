@@ -14,8 +14,8 @@ NEWSPIDER_MODULE = 'greenhouse_scraper.spiders'
 
 SOURCE = "greenhouse"
 
-# S3_BUCKET = "levergreen-data"
-# S3_PATH = "scrapy/{bot_name}/{table_name}/{partitions}/{file_name}"
+S3_BUCKET = "levergreen-data"
+S3_PATH = "scrapy/{bot_name}/{spider_name}/{partitions}/{file_name}"
 
 S3_HTML_BUCKET = "levergreen-raw-html"
 S3_HTML_PATH = "scrapy/{source}/{bot_name}/{partitions}/{file_name}"
@@ -73,9 +73,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'greenhouse_scraper.pipelines.GreenhouseScraperPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'greenhouse_scraper.pipelines.GreenhouseScraperPipelineParquet': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
