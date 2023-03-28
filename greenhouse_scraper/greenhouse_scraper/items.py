@@ -7,11 +7,8 @@ import scrapy
 from itemloaders.processors import TakeFirst, MapCompose, Compose
 from w3lib.html import remove_tags
 
-def get_boxscore_id(link):
-    return link.split("/")[2].split(".")
-
-def get_pfr_team_id(link):
-    return link.split("/")[2]
+def get_last_word(class_name):
+    return class_name.split()[-1]
 
 class JobsOutlineItem(scrapy.Item):
     # define the fields for your item here like:
@@ -24,3 +21,14 @@ class JobsOutlineItem(scrapy.Item):
     job_title = scrapy.Field(output_processor=TakeFirst())
     greenhouse_company_name = scrapy.Field(output_processor=TakeFirst())
     department_id = scrapy.Field(output_processor=TakeFirst())
+
+class JobDepartmentsItem(scrapy.Item):
+    # define the fields for your item here like:
+    id = scrapy.Field(output_processor=TakeFirst())
+    created_at = scrapy.Field(output_processor=TakeFirst())
+    updated_at = scrapy.Field(output_processor=TakeFirst())
+    source = scrapy.Field(output_processor=TakeFirst())
+    greenhouse_company_name = scrapy.Field(output_processor=TakeFirst())
+    department_id = scrapy.Field(output_processor=TakeFirst())
+    department_name = scrapy.Field(output_processor=TakeFirst())
+    department_category = scrapy.Field(input_processor = MapCompose(get_last_word), output_processor=TakeFirst())
