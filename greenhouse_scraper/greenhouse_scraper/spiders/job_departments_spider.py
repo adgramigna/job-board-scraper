@@ -103,7 +103,7 @@ class JobDepartmentsSpider(scrapy.Spider):
         return util.hash_ids.encode(
             self.spider_id,
             i,
-            int(self.current_time)
+            int(self.created_at)
         )
 
     def finalize_response(self, response):
