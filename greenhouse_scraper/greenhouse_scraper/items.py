@@ -16,11 +16,11 @@ class JobsOutlineItem(scrapy.Item):
     created_at = scrapy.Field(output_processor=TakeFirst())
     updated_at = scrapy.Field(output_processor=TakeFirst())
     source = scrapy.Field(output_processor=TakeFirst())
-    main_department = scrapy.Field(output_processor=TakeFirst())
-    secondary_department = scrapy.Field(output_processor=TakeFirst())
-    job_title = scrapy.Field(output_processor=TakeFirst())
-    greenhouse_company_name = scrapy.Field(output_processor=TakeFirst())
-    department_id = scrapy.Field(output_processor=TakeFirst())
+    department_ids = scrapy.Field(output_processor=TakeFirst())
+    office_ids = scrapy.Field(output_processor=TakeFirst())
+    opening_title = scrapy.Field(output_processor=TakeFirst())
+    opening_link = scrapy.Field(output_processor=TakeFirst())
+    location = scrapy.Field(output_processor=TakeFirst())
 
 class JobDepartmentsItem(scrapy.Item):
     # define the fields for your item here like:
