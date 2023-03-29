@@ -45,10 +45,8 @@ class GreenhouseScraperPipelineParquet:
         logging.getLogger("scrapy-playwright").setLevel(logging.INFO)
 
     def determine_partitions(self, spider):
-        if spider.name == "job_departments":
+        if spider.name in ["job_departments", "jobs_outline"]:
             return f"date={spider.current_date_utc}/company={spider.greenhouse_company_name}"
-        elif spider.name in ["boxscore_team_stats", "boxscore_pregame_info", "boxscore_score_breakdown"]:
-            return f"boxscore_id={spider.boxscore_id}"
 
     def _get_uri_params(self):
         params = {}
