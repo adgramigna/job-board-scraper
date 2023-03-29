@@ -7,5 +7,7 @@ from scrapy.utils.project import get_project_settings
 
 process = CrawlerProcess(get_project_settings())
 # process.crawl(JobsOutlineSpider, careers_page_url = sys.argv[1])
-process.crawl(JobDepartmentsSpider, careers_page_url = sys.argv[1], use_existing_html=False)
+process.crawl(JobDepartmentsSpider, careers_page_url = sys.argv[1], use_existing_html=True)
+print('Jobs Outline')
+process.crawl(JobsOutlineSpider, careers_page_url = sys.argv[1], use_existing_html=True)
 process.start()
