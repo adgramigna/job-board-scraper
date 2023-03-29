@@ -122,7 +122,7 @@ class JobDepartmentsSpider(scrapy.Spider):
         for i, department in enumerate(all_departments):
             il = ItemLoader(item=JobDepartmentsItem(), selector=Selector(text=department.get(),type="html"))
             dept_loader = il.nested_xpath(f"//section[contains(@class, 'level')]/*[self::h1 or self::h2 or self::h3 or self::h4]")
-            self.logger.info(f"Parsing row {i+1}, {self.greenhouse_company_name}")
+            self.logger.info(f"Parsing row {i+1}, {self.greenhouse_company_name}, {self.name}")
 
             dept_loader.add_xpath("department_id", "@id")
             dept_loader.add_xpath("department_name", "text()")
