@@ -66,24 +66,24 @@ class JobDepartmentsSpider(scrapy.Spider):
     @property
     def url(self):
         if self.html_file == "":
-            #Remove final "/" so greenhouse_company_name is correct
+            #Remove final "/" so company_name is correct
             return self.html_source
         else:
             return self.settings["DEFAULT_HTML"]
     
     @property
-    def greenhouse_company_name(self):
+    def company_name(self):
         return self.html_source.split("/")[-1]
     
     def determine_partitions(self):
-        return f"date={self.current_date_utc}/company={self.greenhouse_company_name}"
+        return f"date={self.current_date_utc}/company={self.company_name}"
 
     def _get_uri_params(self):
         params = {}
         params["source"] = self.settings["SOURCE"]
         params["bot_name"] = self.settings["BOT_NAME"]
         params["partitions"] = self.determine_partitions()
-        params["file_name"] = f"{self.greenhouse_company_name}-{self.allowed_domains[0].split('.')[1]}.html"
+        params["file_name"] = f"{self.company_name}-{self.allowed_domains[0].split('.')[1]}.html"
 
         return params
 
@@ -122,7 +122,7 @@ class JobDepartmentsSpider(scrapy.Spider):
         for i, department in enumerate(all_departments):
             il = ItemLoader(item=JobDepartmentsItem(), selector=Selector(text=department.get(),type="html"))
             dept_loader = il.nested_xpath(f"//section[contains(@class, 'level')]/*[self::h1 or self::h2 or self::h3 or self::h4]")
-            self.logger.info(f"Parsing row {i+1}, {self.greenhouse_company_name}, {self.name}")
+            self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
 
             dept_loader.add_xpath("department_id", "@id")
             dept_loader.add_xpath("department_name", "text()")
@@ -133,7 +133,7 @@ class JobDepartmentsSpider(scrapy.Spider):
             il.add_value("updated_at", self.updated_at)
 
             il.add_value("source", self.html_source)
-            il.add_value("greenhouse_company_name", self.greenhouse_company_name)
+            il.add_value("company_name", self.company_name)
 
             yield il.load_item()
 

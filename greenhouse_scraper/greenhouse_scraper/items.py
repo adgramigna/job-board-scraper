@@ -28,7 +28,7 @@ class JobDepartmentsItem(scrapy.Item):
     created_at = scrapy.Field(output_processor=TakeFirst())
     updated_at = scrapy.Field(output_processor=TakeFirst())
     source = scrapy.Field(output_processor=TakeFirst())
-    greenhouse_company_name = scrapy.Field(output_processor=TakeFirst())
+    company_name = scrapy.Field(output_processor=TakeFirst())
     department_id = scrapy.Field(output_processor=TakeFirst())
     department_name = scrapy.Field(output_processor=TakeFirst())
     department_category = scrapy.Field(input_processor = MapCompose(get_last_word), output_processor=TakeFirst())

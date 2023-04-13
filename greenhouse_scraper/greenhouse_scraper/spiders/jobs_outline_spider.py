@@ -33,7 +33,7 @@ class JobsOutlineSpider(JobDepartmentsSpider):
 
         for i, opening in enumerate(job_openings):
             il = ItemLoader(item=JobsOutlineItem(), selector=Selector(text=opening.get(),type="html"))
-            self.logger.info(f"Parsing row {i+1}, {self.greenhouse_company_name} {self.name}")
+            self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
             nested = il.nested_xpath('//div[@class="opening"]')
 
             nested.add_xpath("department_ids", "@department_id")
@@ -49,7 +49,7 @@ class JobsOutlineSpider(JobDepartmentsSpider):
             # self.logger.info(f'{i} {j} {k} {job_xpath} xpth')
             yield il.load_item()
 
-        # filename = f'{self.greenhouse_company_name}-{self.allowed_domains[0].split(".")[1]}.html'
+        # filename = f'{self.company_name}-{self.allowed_domains[0].split(".")[1]}.html'
         # with open(filename, 'wb') as f:
         #     f.write(response.body)
         # self.log(f'Saved file {filename}')

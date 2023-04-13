@@ -46,7 +46,7 @@ class GreenhouseScraperPipelineParquet:
 
     def determine_partitions(self, spider):
         if spider.name in ["job_departments", "jobs_outline"]:
-            return f"date={spider.current_date_utc}/company={spider.greenhouse_company_name}"
+            return f"date={spider.current_date_utc}/company={spider.company_name}"
 
     def _get_uri_params(self):
         params = {}
