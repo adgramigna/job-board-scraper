@@ -22,6 +22,19 @@ class JobsOutlineItem(scrapy.Item):
     opening_link = scrapy.Field(output_processor=TakeFirst())
     location = scrapy.Field(output_processor=TakeFirst())
 
+class LeverJobsOutlineItem(scrapy.Item):
+    # define the fields for your item here like:
+    id = scrapy.Field(output_processor=TakeFirst())
+    created_at = scrapy.Field(output_processor=TakeFirst())
+    updated_at = scrapy.Field(output_processor=TakeFirst())
+    source = scrapy.Field(output_processor=TakeFirst())
+    department_names = scrapy.Field(output_processor=TakeFirst())
+    workplace_type = scrapy.Field(output_processor=TakeFirst())
+    opening_title = scrapy.Field(output_processor=TakeFirst())
+    opening_link = scrapy.Field(output_processor=TakeFirst())
+    location = scrapy.Field(output_processor=TakeFirst())
+    company_name = scrapy.Field(output_processor=TakeFirst())
+
 class JobDepartmentsItem(scrapy.Item):
     # define the fields for your item here like:
     id = scrapy.Field(output_processor=TakeFirst())
