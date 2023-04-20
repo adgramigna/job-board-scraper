@@ -18,15 +18,13 @@ import boto3
 import logging
 import psycopg2
 
-
-
 class JobScraperPipelinePostgres:
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         ## Connection Details
-        self.hostname = os.environ.get("PG_HOST"),
-        self.username = os.environ.get("PG_USER"),
-        self.password = os.environ.get("PG_PASSWORD"),
-        self.database = os.environ.get("PG_DATABASE"),
+        self.hostname = os.environ.get("PG_HOST")
+        self.username = os.environ.get("PG_USER")
+        self.password = os.environ.get("PG_PASSWORD")
+        self.database = os.environ.get("PG_DATABASE")
 
         ## Create/Connect to database
         self.connection = psycopg2.connect(host=self.hostname, user=self.username, password=self.password, dbname=self.database)
