@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from job_board_scraper.exporters import ParquetItemExporter
+from job_board_scraper.job_board_scraper.utils import pipline_util
 
 from io import BytesIO
 from dotenv import load_dotenv
@@ -26,7 +27,6 @@ class JobScraperPipelinePostgres:
         self.username = os.environ.get("PG_USER"),
         self.password = os.environ.get("PG_PASSWORD"),
         self.database = os.environ.get("PG_DATABASE"),
-        self.table_name = kwargs.pop("table_name", "delete_me")
 
         ## Create/Connect to database
         self.connection = psycopg2.connect(host=self.hostname, user=self.username, password=self.password, dbname=self.database)
@@ -34,43 +34,23 @@ class JobScraperPipelinePostgres:
         ## Create cursor, used to execute commands
         self.cur = self.connection.cursor()
 
-        ## Set Initial table schema, columns present in all tables
-        self.initial_table_schema = f"""CREATE TABLE IF NOT EXISTS {self.table_name}( 
-            id PRIMARY KEY
-            , created_at bigint
-            , updated_at bigint
-            , source text
-        """
-
-    def create_table_schema(self, table_name):
-        if table_name == "greenhouse_job_departments":
-            full_table_schema = self.initial_table_schema + """, company_name text
-                , department_category text
-                , department_id text
-                , department_name text
-            )
-            """
-        if table_name == "greenhouse_jobs_outline":
-            full_table_schema = self.initial_table_schema + """, department_ids text
-                , location text
-                , office_ids text
-                , opening_link text
-                , opening_title text
-            )
-            """
-        if table_name == "lever_jobs_outline":
-            full_table_schema = self.initial_table_schema + """, company_name text
-                , department_names text
-                , location text
-                , opening_link text
-                , opening_title text
-                , workplace_type text
-            )
-            """
-        self.cur.execute(full_table_schema)
+    def open_spider(self, spider):
+        self.table_name = spider.name
+        initial_table_schema = pipline_util.set_initial_table_schema(self.table_name)
+        create_table_statement = pipline_util.create_table_schema(self.table_name, initial_table_schema)
+        self.cur.execute(create_table_statement)
     
     def process_item(self, item, spider):
+         ## Execute insert of data into database
+        insert_item_statement = pipline_util.create_insert_item(self.table_name, item)
+        self.cur.execute(insert_item_statement)
+        self.connection.commit()
         return item
+
+    def close_spider(self, spider):
+        ## Close cursor & connection to database 
+        self.cur.close()
+        self.connection.close()
 
 class JobScraperPipelineParquet:
     def __init__(self, settings):
