@@ -27,8 +27,8 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         self.html_source = self.careers_page_url[:-1] if self.careers_page_url[-1] == '/' else self.careers_page_url
         self.settings = get_project_settings()
         self.current_time = time.time()
-        self.updated_at = self.current_time
-        self.created_at = self.current_time
+        self.updated_at = int(self.current_time)
+        self.created_at = int(self.current_time)
         self.current_date_utc = datetime.utcfromtimestamp(self.current_time).strftime("%Y-%m-%d")
         self.logger.info(f"Initialized Spider, {self.html_source}")
 
@@ -101,7 +101,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
 
     def finalize_response(self, response):
         if self.html_file != "":
-            self.created_at = self.html_file["LastModified"].timestamp()
+            self.created_at = int(self.html_file["LastModified"].timestamp())
             return self.html_file["Body"].read()
         else:
             self.export_html(response.text)
