@@ -17,7 +17,7 @@ load_dotenv()
 # logger = logging.getLogger("logger")
 
 class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
-    name = "jobs_outline"
+    name = "greenhouse_jobs_outline"
     allowed_domains = ["boards.greenhouse.io"]
 
     def __init__(self, *args, **kwargs):

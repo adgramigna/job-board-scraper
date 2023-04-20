@@ -16,7 +16,7 @@ load_dotenv()
 # logger = logging.getLogger("logger")
 
 class GreenhouseJobDepartmentsSpider(scrapy.Spider):
-    name = "job_departments"
+    name = "greenhouse_job_departments"
     allowed_domains = ["boards.greenhouse.io"]
 
     def __init__(self, *args, **kwargs):
