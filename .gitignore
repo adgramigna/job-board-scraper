@@ -130,5 +130,3 @@ dmypy.json
 
 #Mac
 .DS_Store
-
-greenhouse_scraper/sample/*

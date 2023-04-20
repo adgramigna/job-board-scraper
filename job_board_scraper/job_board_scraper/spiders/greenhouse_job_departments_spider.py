@@ -5,8 +5,8 @@ import time
 import boto3
 import os
 from dotenv import load_dotenv
-from greenhouse_scraper.items import JobDepartmentsItem
-from greenhouse_scraper.utils import general as util
+from job_board_scraper.items import GreenhouseJobDepartmentsItem
+from job_board_scraper.utils import general as util
 from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
 from scrapy.utils.project import get_project_settings
@@ -15,14 +15,7 @@ from datetime import datetime
 load_dotenv()
 # logger = logging.getLogger("logger")
 
-
-#TODO: 
-# 1. Add in proper URLs as well as logic to scrape HTML file in s3 or raw website
-    #a. add kwargs to run script as well
-# 2. Create s3 bucket for raw HTML
-# 3. Begin Scraping Greenhouse for 3 different companies
-
-class JobDepartmentsSpider(scrapy.Spider):
+class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     name = "job_departments"
     allowed_domains = ["boards.greenhouse.io"]
 
@@ -80,7 +73,7 @@ class JobDepartmentsSpider(scrapy.Spider):
 
     def _get_uri_params(self):
         params = {}
-        params["source"] = self.settings["SOURCE"]
+        params["source"] = self.allowed_domains[0].split('.')[1]
         params["bot_name"] = self.settings["BOT_NAME"]
         params["partitions"] = self.determine_partitions()
         params["file_name"] = f"{self.company_name}-{self.allowed_domains[0].split('.')[1]}.html"
@@ -120,7 +113,7 @@ class JobDepartmentsSpider(scrapy.Spider):
         all_departments = selector.xpath('//section[contains(@class, "level")]')
 
         for i, department in enumerate(all_departments):
-            il = ItemLoader(item=JobDepartmentsItem(), selector=Selector(text=department.get(),type="html"))
+            il = ItemLoader(item=GreenhouseJobDepartmentsItem(), selector=Selector(text=department.get(),type="html"))
             dept_loader = il.nested_xpath(f"//section[contains(@class, 'level')]/*[self::h1 or self::h2 or self::h3 or self::h4]")
             self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
 

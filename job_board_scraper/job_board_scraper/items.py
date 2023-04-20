@@ -10,7 +10,7 @@ from w3lib.html import remove_tags
 def get_last_word(class_name):
     return class_name.split()[-1]
 
-class JobsOutlineItem(scrapy.Item):
+class GreenhouseJobsOutlineItem(scrapy.Item):
     # define the fields for your item here like:
     id = scrapy.Field(output_processor=TakeFirst())
     created_at = scrapy.Field(output_processor=TakeFirst())
@@ -35,7 +35,7 @@ class LeverJobsOutlineItem(scrapy.Item):
     location = scrapy.Field(output_processor=TakeFirst())
     company_name = scrapy.Field(output_processor=TakeFirst())
 
-class JobDepartmentsItem(scrapy.Item):
+class GreenhouseJobDepartmentsItem(scrapy.Item):
     # define the fields for your item here like:
     id = scrapy.Field(output_processor=TakeFirst())
     created_at = scrapy.Field(output_processor=TakeFirst())

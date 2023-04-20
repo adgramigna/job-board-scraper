@@ -5,9 +5,9 @@ import time
 import boto3
 import os
 from dotenv import load_dotenv
-from greenhouse_scraper.items import JobsOutlineItem
-from greenhouse_scraper.utils import general as util
-from greenhouse_scraper.spiders.job_departments_spider import JobDepartmentsSpider
+from job_board_scraper.items import GreenhouseJobsOutlineItem
+from job_board_scraper.utils import general as util
+from job_board_scraper.spiders.greenhouse_job_departments_spider import GreenhouseJobDepartmentsSpider
 from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
 from scrapy.utils.project import get_project_settings
@@ -16,7 +16,7 @@ from datetime import datetime
 load_dotenv()
 # logger = logging.getLogger("logger")
 
-class JobsOutlineSpider(JobDepartmentsSpider):
+class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
     name = "jobs_outline"
     allowed_domains = ["boards.greenhouse.io"]
 
@@ -32,7 +32,7 @@ class JobsOutlineSpider(JobDepartmentsSpider):
         job_openings = selector.xpath('//div[@class="opening"]')
 
         for i, opening in enumerate(job_openings):
-            il = ItemLoader(item=JobsOutlineItem(), selector=Selector(text=opening.get(),type="html"))
+            il = ItemLoader(item=GreenhouseJobsOutlineItem(), selector=Selector(text=opening.get(),type="html"))
             self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
             nested = il.nested_xpath('//div[@class="opening"]')
 

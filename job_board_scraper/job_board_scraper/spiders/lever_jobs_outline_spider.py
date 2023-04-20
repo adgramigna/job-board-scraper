@@ -5,9 +5,9 @@ import time
 import boto3
 import os
 from dotenv import load_dotenv
-from greenhouse_scraper.spiders.jobs_outline_spider import JobsOutlineSpider
-from greenhouse_scraper.items import LeverJobsOutlineItem
-from greenhouse_scraper.utils import general as util
+from job_board_scraper.spiders.greenhouse_jobs_outline_spider import GreenhouseJobsOutlineSpider
+from job_board_scraper.items import LeverJobsOutlineItem
+from job_board_scraper.utils import general as util
 from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
 from scrapy.utils.project import get_project_settings
@@ -16,7 +16,7 @@ from datetime import datetime
 load_dotenv()
 # logger = logging.getLogger("logger")
 
-class LeverJobsOutlineSpider(JobsOutlineSpider):
+class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
     name = "lever_jobs_outline"
     allowed_domains = ["jobs.lever.co"]
 

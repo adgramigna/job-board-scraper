@@ -6,7 +6,7 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from greenhouse_scraper.exporters import ParquetItemExporter
+from job_board_scraper.exporters import ParquetItemExporter
 
 from io import BytesIO
 from dotenv import load_dotenv
@@ -17,7 +17,7 @@ import boto3
 import logging
 
 
-class GreenhouseScraperPipelineParquet:
+class JobScraperPipelineParquet:
     def __init__(self, settings):
         load_dotenv()
         self.bucket_name = settings["S3_BUCKET"]

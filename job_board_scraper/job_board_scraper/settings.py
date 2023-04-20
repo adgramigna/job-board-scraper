@@ -1,4 +1,4 @@
-# Scrapy settings for greenhouse_scraper project
+# Scrapy settings for job_board_scraper project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,12 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'greenhouse_scraper'
+BOT_NAME = 'job_board_scraper'
 
-SPIDER_MODULES = ['greenhouse_scraper.spiders']
-NEWSPIDER_MODULE = 'greenhouse_scraper.spiders'
-
-SOURCE = "greenhouse"
+SPIDER_MODULES = ['job_board_scraper.spiders']
+NEWSPIDER_MODULE = 'job_board_scraper.spiders'
 
 S3_BUCKET = "levergreen-data"
 S3_PATH = "scrapy/{bot_name}/{spider_name}/{partitions}/{file_name}"
@@ -25,7 +23,7 @@ DEFAULT_HTML = "https://blank.org"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'greenhouse_scraper (+http://www.yourdomain.com)'
+#USER_AGENT = 'job_scraper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -56,13 +54,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'greenhouse_scraper.middlewares.GreenhouseScraperSpiderMiddleware': 543,
+#    'job_scraper.middlewares.JobScraperSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'greenhouse_scraper.middlewares.GreenhouseScraperDownloaderMiddleware': 543,
+#    'job_scraper.middlewares.JobScraperDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -74,7 +72,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # ITEM_PIPELINES = {
-#    'greenhouse_scraper.pipelines.GreenhouseScraperPipelineParquet': 300,
+#    'job_scraper.pipelines.JobScraperPipelineParquet': 300,
 # }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
