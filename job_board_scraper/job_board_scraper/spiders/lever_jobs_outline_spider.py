@@ -22,7 +22,7 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.spider_id = kwargs.pop("spider_id", 2)
+        self.spider_id = kwargs.pop("spider_id", 3)
         self.logger.info(f"Initialized Spider, {self.html_source}")
 
     def parse(self, response):
