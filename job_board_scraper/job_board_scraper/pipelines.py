@@ -7,7 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from job_board_scraper.exporters import ParquetItemExporter
-from job_board_scraper.job_board_scraper.utils import pipline_util
+from job_board_scraper.utils import pipline_util
 
 from io import BytesIO
 from dotenv import load_dotenv
@@ -17,6 +17,8 @@ import os
 import boto3
 import logging
 import psycopg2
+
+logger = logging.getLogger("logger")
 
 class JobScraperPipelinePostgres:
     def __init__(self):
@@ -40,8 +42,9 @@ class JobScraperPipelinePostgres:
     
     def process_item(self, item, spider):
          ## Execute insert of data into database
-        insert_item_statement = pipline_util.create_insert_item(self.table_name, item)
-        self.cur.execute(insert_item_statement)
+        insert_item_statement, table_values_list = pipline_util.create_insert_item(self.table_name, item)
+        # logger.info(f"INSERT STMT {insert_item_statement} ____ {table_values_list}")
+        self.cur.execute(insert_item_statement, tuple(table_values_list))
         self.connection.commit()
         return item
 
