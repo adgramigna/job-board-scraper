@@ -24,28 +24,28 @@ jobs:
       
       - name: Obtain IP Address
         run: |
-          echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
+          echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
           echo $MY_IP
       
-      - name: Install AWS CLI V2
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+#      - name: Install AWS CLI V2
+ #       run: |
+  #        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+   #       unzip awscliv2.zip
+    #      sudo ./aws/install
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::{{ secrets.AWS_ACCOUNT_ID }}:policy/github-actions-security-group-ingress
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:policy/github-actions-security-group-ingress
           aws-region: ${{ secrets.AWS_REGION }}
       
       - name: Whitelist this IP
         run: |
           aws ec2 authorize-security-group-ingress \
-          --group-id {{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
           --protocol tcp \
           --port 5432 \
-          --cidr {{ env.MY_IP }}/32
+          --cidr ${{ env.MY_IP }}/32
       
       - name: Run Python script
         run: python job_board_scraper/run_job_scraper.py 
@@ -65,8 +65,8 @@ jobs:
         if: ${{ always() }}
         run: |
           aws ec2 revoke-security-group-ingress \
-          --group-id {{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
           --protocol tcp \
           --port 5432 \
-          --cidr {{ env.MY_IP }}/32
+          --cidr ${{ env.MY_IP }}/32
 
