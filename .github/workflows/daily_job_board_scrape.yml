@@ -31,12 +31,6 @@ jobs:
           echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
           echo $MY_IP
       
-#      - name: Install AWS CLI V2
- #       run: |
-  #        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-   #       unzip awscliv2.zip
-    #      sudo ./aws/install
-      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -51,7 +45,10 @@ jobs:
           --port 5432 \
           --cidr ${{ env.MY_IP }}/32
       
-      - name: Run Python script
+      - name: Obtain Time Before Scrapy Run
+        run : echo "CURRENT_TIME=$(date +%s)" >> $GITHUB_ENV
+      
+      - name: Run Scrapy script
         run: cd job_board_scraper && python run_job_scraper.py 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -73,4 +70,14 @@ jobs:
           --protocol tcp \
           --port 5432 \
           --cidr ${{ env.MY_IP }}/32
+      
+      - name: Confirm Scrapy Worked for Each Company
+        run: |
+          cd job_board_scraper
+          python compare_workflow_success.py ${{ env.CURRENT_TIME }}
+        env: 
+          COMPARISON_QUERY_EXPECTED: ${{ secrets.COMPARISON_QUERY_EXPECTED }}
+          COMPARISON_QUERY_ACTUAL: ${{ secrets.COMPARISON_QUERY_ACTUAL }}
+          MISMATCHED_URL_QUERY: ${{ secrets.MISMATCHED_URL_QUERY }}
+
 
