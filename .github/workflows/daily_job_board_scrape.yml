@@ -41,7 +41,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::613512595846:policy/github-actions-security-group-ingress
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-2
       
       - name: Whitelist this IP
         run: |
