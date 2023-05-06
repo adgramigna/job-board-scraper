@@ -12,7 +12,6 @@ from scrapy.utils.project import get_project_settings
 
 logger = logging.getLogger("logger")
 process = CrawlerProcess(get_project_settings())
-pg_wrapper = PostgresWrapper()
 connection = psycopg2.connect(host=os.environ.get("PG_HOST"), user=os.environ.get("PG_USER"), password=os.environ.get("PG_PASSWORD"), dbname=os.environ.get("PG_DATABASE"))
 cursor = connection.cursor()
 cursor.execute(os.environ.get("PAGES_TO_SCRAPE_QUERY"))
