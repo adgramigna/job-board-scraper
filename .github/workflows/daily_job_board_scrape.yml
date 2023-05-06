@@ -63,9 +63,7 @@ jobs:
           RAW_HTML_S3_BUCKET: ${{ secrets.RAW_HTML_S3_BUCKET }}
     
       - name: Confirm Scrapy Worked for Each Company
-        run: |
-          cd job_board_scraper
-          python compare_workflow_success.py ${{ env.CURRENT_TIME }}
+        run: cd job_board_scraper && python compare_workflow_success.py ${{ env.CURRENT_TIME }}
         env: 
           COMPARISON_QUERY_EXPECTED: ${{ secrets.COMPARISON_QUERY_EXPECTED }}
           COMPARISON_QUERY_ACTUAL: ${{ secrets.COMPARISON_QUERY_ACTUAL }}
