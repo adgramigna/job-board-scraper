@@ -40,7 +40,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:policy/github-actions-security-group-ingress
+          role-to-assume: arn:aws:iam::613512595846:policy/github-actions-security-group-ingress
           aws-region: ${{ secrets.AWS_REGION }}
       
       - name: Whitelist this IP
