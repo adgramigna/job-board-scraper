@@ -52,7 +52,7 @@ jobs:
           --cidr ${{ env.MY_IP }}/32
       
       - name: Run Python script
-        run: python job_board_scraper/run_job_scraper.py 
+        run: cd job_board_scraper && python run_job_scraper.py 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
