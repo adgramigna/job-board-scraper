@@ -6,7 +6,7 @@ from job_board_scraper.utils.postgres_wrapper import PostgresWrapper
 
 logger = logging.getLogger("ComparisonLogger")
 time_to_check = sys.argv[1]
-connection = psycopg2.connect(host=os.environ.get("PG_HOST"), user=os.environ.get("PG_USER"), password=os.environ.get("PG_PASSWORD"), dbname=os.environ.get("PG_DATABASE"), port=5433)
+connection = psycopg2.connect(host=os.environ.get("PG_HOST"), user=os.environ.get("PG_USER"), password=os.environ.get("PG_PASSWORD"), dbname=os.environ.get("PG_DATABASE"))
 cursor = connection.cursor()
 cursor.execute(os.environ.get("COMPARISON_QUERY_EXPECTED"))
 num_expected = cursor.fetchall()[0]

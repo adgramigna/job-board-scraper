@@ -62,6 +62,15 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
           RAW_HTML_S3_BUCKET: ${{ secrets.RAW_HTML_S3_BUCKET }}
     
+      - name: Confirm Scrapy Worked for Each Company
+        run: |
+          cd job_board_scraper
+          python compare_workflow_success.py ${{ env.CURRENT_TIME }}
+        env: 
+          COMPARISON_QUERY_EXPECTED: ${{ secrets.COMPARISON_QUERY_EXPECTED }}
+          COMPARISON_QUERY_ACTUAL: ${{ secrets.COMPARISON_QUERY_ACTUAL }}
+          MISMATCHED_URL_QUERY: ${{ secrets.MISMATCHED_URL_QUERY }}
+  
       - name: Deauthorize IP
         if: ${{ always() }}
         run: |
@@ -71,13 +80,5 @@ jobs:
           --port 5432 \
           --cidr ${{ env.MY_IP }}/32
       
-      - name: Confirm Scrapy Worked for Each Company
-        run: |
-          cd job_board_scraper
-          python compare_workflow_success.py ${{ env.CURRENT_TIME }}
-        env: 
-          COMPARISON_QUERY_EXPECTED: ${{ secrets.COMPARISON_QUERY_EXPECTED }}
-          COMPARISON_QUERY_ACTUAL: ${{ secrets.COMPARISON_QUERY_ACTUAL }}
-          MISMATCHED_URL_QUERY: ${{ secrets.MISMATCHED_URL_QUERY }}
 
 
