@@ -6,9 +6,12 @@ from job_board_scraper.utils.postgres_wrapper import PostgresWrapper
 logger = logging.getLogger("ComparisonLogger")
 time_to_check = sys.argv[1]
 pg_wrapper = PostgresWrapper()
-cursor = pg_wrapper.cursor()
+connection = pg_wrapper.connection()
+cursor = connection.cursor()
 cursor.execute(os.environ.get("COMPARISON_QUERY_EXPECTED"))
 num_expected = cursor.fetchall()[0]
+cursor.close()
+connection.close()
 
 cursor.execute(os.environ.get("COMPARISON_QUERY_ACTUAL"), tuple([time_to_check, time_to_check]))
 num_actual = cursor.fetchall()[0]

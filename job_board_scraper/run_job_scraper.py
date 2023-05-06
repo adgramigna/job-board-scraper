@@ -12,9 +12,12 @@ from scrapy.utils.project import get_project_settings
 logger = logging.getLogger("logger")
 process = CrawlerProcess(get_project_settings())
 pg_wrapper = PostgresWrapper()
-cursor = pg_wrapper.cursor()
+connection = pg_wrapper.connection()
+cursor = connection.cursor()
 cursor.execute(os.environ.get("PAGES_TO_SCRAPE_QUERY"))
 careers_page_urls = cursor.fetchall()
+cursor.close()
+connection.close()
 
 for url in careers_page_urls:
     careers_page_url = url[0] #UnTuple-ify
