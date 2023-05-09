@@ -1,0 +1,55 @@
+version: 2
+
+sources:
+  - name: greenhouse
+    description: >
+      Data from careers pages of companies who use greenhouse. Called from external Python script and cleaned slightly.
+    schema: public
+    loader: scrapy
+    loaded_at_field: to_timestamp(updated_at)
+    freshness:
+      warn_after: {count: 1, period: day}
+      error_after: {count: 2, period: day}
+
+    tables:
+      - name: greenhouse_job_departments
+        description: >
+          Contains job department information from greenhouse. To be joined with greenhouse_jobs_outline
+        tests:
+          - dbt_expectations.expect_table_columns_to_match_set:
+              column_list: ["id", "levergreen_id", "created_at", "updated_at",
+               "source", "company_name", "department_category", "department_id",
+               "department_name"]
+        columns:
+          - name: id
+            description: serial id created by postgres upon insertion
+            tests:
+              - unique
+              - not_null
+          - name: levergreen_id
+            description: Id from Levergreen scraper. Unique relative to the HTML file used
+            tests:
+              - not_null
+          - name: created_at
+            description: Timestamp of when the greenhouse site was scraped, in UNIX time. If we used existing HTML, this field is not updated.
+            tests:
+              - not_null
+          - name: updated_at
+            description: Timestamp of when the greenhouse site was scraped, in UNIX time.
+            tests:
+              - not_null
+          - name: source
+            description: Greenhouse careers page source. 
+            tests:
+              - not_null
+          - name: department_category
+            description: Department Category. Specifies if deparmtent is main department or sub department.
+            tests:
+              - accepted_values:
+                  values: ['level-0', 'level-1'] #Never seen a level-2, but want to.
+                  config:  
+                    severity: warn
+          - name: department_id
+            description: Greenhouse specific id for the department. Joins to Greenhouse Outline
+          - name: department_name
+            description: Name of the Greenhouse Department
