@@ -53,3 +53,59 @@ sources:
             description: Greenhouse specific id for the department. Joins to Greenhouse Outline
           - name: department_name
             description: Name of the Greenhouse Department
+          - name: company_name
+            description: Company name from Greenhouse. Taken by grabbing the end of the source.
+            tests:
+              - not_null
+
+      - name: greenhouse_jobs_outline
+        description: Jobs outline for Greenhouse. Contains information about the actual posting
+        tests:
+          - dbt_expectations.expect_table_columns_to_match_set:
+              column_list: ["id", "levergreen_id", "created_at", "updated_at",
+               "source", "department_ids", "location", "office_ids",
+               "opening_link", "opening_title"]
+        columns:
+        - name: id
+          description: serial id created by postgres upon insertion
+          tests:
+            - unique
+            - not_null
+        - name: levergreen_id
+          description: Id from Levergreen scraper. Unique relative to the HTML file used
+          tests:
+            - not_null
+        - name: created_at
+          description: Timestamp of when the greenhouse site was scraped, in UNIX time. If we used existing HTML, this field is not updated.
+          tests:
+            - not_null
+        - name: updated_at
+          description: Timestamp of when the greenhouse site was scraped, in UNIX time.
+          tests:
+            - not_null
+        - name: source
+          description: Greenhouse careers page source. 
+          tests:
+            - not_null
+        - name: department_ids
+          description: Comma separated list of Greenhouse department_ids. Will use this to join to greenhouse_job_deparments further on in data models
+          tests:
+            - not_null:
+                config:  
+                  severity: warn
+        - name: office_ids
+          description: Comma separated list of of office_ids. Sometimes null in the source data, not sure why
+        - name: location
+          description: Comma separated list of locations
+          tests:
+            - not_null:
+                config:  
+                  severity: warn
+        - name: opening_link
+          description: Source of the actual job posting
+          tests:
+            - not_null
+        - name: opening_title
+          description: Name of the role
+          tests:
+            - not_null
