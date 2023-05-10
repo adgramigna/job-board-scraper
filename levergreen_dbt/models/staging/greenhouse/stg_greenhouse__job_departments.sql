@@ -1,4 +1,4 @@
-with most_recent_by_levergreen_id as (
+with greenhouse_departments_by_levergreen_id as (
     select
         *,
         row_number() over(
@@ -23,6 +23,6 @@ select
     department_category,
     department_name
 from
-    most_recent_by_levergreen_id
+    greenhouse_departments_by_levergreen_id
 where
     earliest_levergreen_id_row = 1
