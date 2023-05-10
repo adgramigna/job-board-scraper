@@ -6,6 +6,7 @@ def set_initial_table_schema(spider_name):
         , created_at bigint
         , updated_at bigint
         , source text
+        , run_hash text
     """
 
 def create_table_schema(table_name, initial_table_schema = ""):
@@ -43,7 +44,7 @@ def finalize_value(item, value):
         return None
 
 def get_table_columns(table_name):
-    initial_columns = """(levergreen_id, created_at, updated_at, source"""
+    initial_columns = """(levergreen_id, created_at, updated_at, source, run_hash"""
     if table_name == "greenhouse_job_departments":
         return initial_columns + """, company_name, department_category, department_id, department_name)"""
     elif table_name == "greenhouse_jobs_outline":
@@ -54,7 +55,7 @@ def get_table_columns(table_name):
         return initial_columns + """)""" 
 
 def get_table_values(table_name, item):
-    initial_percent_s = """(%s, %s, %s, %s"""
+    initial_percent_s = """(%s, %s, %s, %s, %s"""
     initial_values = [finalize_value(item, "id"), finalize_value(item, "created_at"), finalize_value(item, "updated_at"), finalize_value(item, "source")]
     if table_name == "greenhouse_job_departments":
         return initial_percent_s + """, %s, %s, %s, %s)""", initial_values + [finalize_value(item, "company_name"), finalize_value(item, "department_category"), finalize_value(item, "department_id"), finalize_value(item, "department_name")]
