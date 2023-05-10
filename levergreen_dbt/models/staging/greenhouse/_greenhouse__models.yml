@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_greenhouse__job_departments
+    description: >
+      Staging view of the job_departments source. Timestamps have been cast from Unix time. Deduping by levergreen id,
+      only taking the earliest levergreen id. Meaning, each HTML source is only displayed once in this staging model.
+    tests:
+        - dbt_expectations.expect_table_columns_to_match_set:
+            column_list: ["id", "levergreen_id", "created_at_utc", "updated_at_utc",
+             "source", "company_name", "department_category", "department_id",
+             "department_name"]
+    columns:
+      - name: id
+        description: serial id created by postgres upon insertion.
+      - name: levergreen_id
+        description: Id from Levergreen scraper. Unique relative to the HTML file used.
+      - name: created_at_utc
+        description: Timestamp of when the greenhouse site was scraped, casted to UTC, timezone shown. If we used existing HTML, this field is not updated.
+      - name: updated_at_utc
+        description: Timestamp of when the greenhouse site was scraped, casted to UTC, timezone shown.
+      - name: source
+        description: Greenhouse careers page source. 
+      - name: department_category
+        description: Department Category. Specifies if deparmtent is main department or sub department.
+      - name: department_id
+        description: Greenhouse specific id for the department. Joins to Greenhouse Outline.
+      - name: department_name
+        description: Name of the Greenhouse Department
+      - name: company_name
+        description: Company name from Greenhouse. Taken by grabbing the end of the source.
+
+  - name:
