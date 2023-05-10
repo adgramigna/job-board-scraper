@@ -24,6 +24,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         self.spider_id = kwargs.pop("spider_id", 1)
         self.use_existing_html = kwargs.pop("use_existing_html", 0)
         self.careers_page_url = kwargs.pop("careers_page_url", "")
+        self.run_hash = kwargs.pop("run_hash", "")
         self.html_source = self.careers_page_url[:-1] if self.careers_page_url[-1] == '/' else self.careers_page_url
         self.settings = get_project_settings()
         self.current_time = time.time()
@@ -127,6 +128,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
 
             il.add_value("source", self.html_source)
             il.add_value("company_name", self.company_name)
+            il.add_value("run_hash", self.run_hash)
 
             yield il.load_item()
 

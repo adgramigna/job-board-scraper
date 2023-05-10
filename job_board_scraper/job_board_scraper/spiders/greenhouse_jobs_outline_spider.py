@@ -46,6 +46,7 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
             il.add_value("created_at", self.created_at)
             il.add_value("updated_at", self.updated_at)
             il.add_value("source", self.html_source)
+            il.add_value("run_hash", self.run_hash)
             # self.logger.info(f'{i} {j} {k} {job_xpath} xpth')
             yield il.load_item()
 

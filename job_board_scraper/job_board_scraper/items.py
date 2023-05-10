@@ -21,6 +21,7 @@ class GreenhouseJobsOutlineItem(scrapy.Item):
     opening_title = scrapy.Field(output_processor=TakeFirst())
     opening_link = scrapy.Field(output_processor=TakeFirst())
     location = scrapy.Field(output_processor=TakeFirst())
+    run_hash = scrapy.Field(output_processor=TakeFirst())
 
 class LeverJobsOutlineItem(scrapy.Item):
     # define the fields for your item here like:
@@ -34,6 +35,7 @@ class LeverJobsOutlineItem(scrapy.Item):
     opening_link = scrapy.Field(output_processor=TakeFirst())
     location = scrapy.Field(output_processor=TakeFirst())
     company_name = scrapy.Field(output_processor=TakeFirst())
+    run_hash = scrapy.Field(output_processor=TakeFirst())
 
 class GreenhouseJobDepartmentsItem(scrapy.Item):
     # define the fields for your item here like:
@@ -45,3 +47,4 @@ class GreenhouseJobDepartmentsItem(scrapy.Item):
     department_id = scrapy.Field(output_processor=TakeFirst())
     department_name = scrapy.Field(output_processor=TakeFirst())
     department_category = scrapy.Field(input_processor = MapCompose(get_last_word), output_processor=TakeFirst())
+    run_hash = scrapy.Field(output_processor=TakeFirst())
