@@ -38,8 +38,8 @@ models:
       +enabled: false
     staging:
       +materialized: view
-      greenhouse:
-        +schema: greenhouse
-      lever:
-        +schema: lever
+      # greenhouse:
+        # +schema: greenhouse
+      # lever:
+        # +schema: lever
 
