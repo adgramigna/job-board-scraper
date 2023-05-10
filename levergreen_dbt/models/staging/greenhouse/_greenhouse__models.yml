@@ -30,4 +30,33 @@ models:
       - name: company_name
         description: Company name from Greenhouse. Taken by grabbing the end of the source.
 
-  - name:
+  - name: stg_greenhouse__jobs_outline
+    description: >
+      Staging view of the Greenhouse jobs_outline source. Timestamps have been cast from Unix time. Deduping by levergreen id,
+      only taking the earliest levergreen id. Meaning, each HTML source is only displayed once in this staging model.
+    tests:
+      - dbt_expectations.expect_table_columns_to_match_set:
+          column_list: ["id", "levergreen_id", "created_at_utc", "updated_at_utc",
+            "source", "department_ids", "location", "office_ids",
+            "opening_link", "opening_title"]
+    columns:
+      - name: id
+        description: serial id created by postgres upon insertion
+      - name: levergreen_id
+        description: Id from Levergreen scraper. Unique relative to the HTML file used
+      - name: created_at_utc
+        description: Timestamp of when the greenhouse site was scraped, in UNIX time. If we used existing HTML, this field is not updated.
+      - name: updated_at_utc
+        description: Timestamp of when the greenhouse site was scraped, in UNIX time.
+      - name: source
+        description: Greenhouse careers page source. 
+      - name: department_ids
+        description: Comma separated list of Greenhouse department_ids. Will use this to join to greenhouse_job_deparments further on in data models
+      - name: office_ids
+        description: Comma separated list of of office_ids. Sometimes null in the source data, not sure why
+      - name: location
+        description: Comma separated list of locations
+      - name: opening_link
+        description: Source of the actual job posting
+      - name: opening_title
+        description: Name of the role
