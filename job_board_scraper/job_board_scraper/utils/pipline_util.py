@@ -56,7 +56,7 @@ def get_table_columns(table_name):
 
 def get_table_values(table_name, item):
     initial_percent_s = """(%s, %s, %s, %s, %s"""
-    initial_values = [finalize_value(item, "id"), finalize_value(item, "created_at"), finalize_value(item, "updated_at"), finalize_value(item, "source")]
+    initial_values = [finalize_value(item, "id"), finalize_value(item, "created_at"), finalize_value(item, "updated_at"), finalize_value(item, "source"), finalize_value(item, "run_hash")]
     if table_name == "greenhouse_job_departments":
         return initial_percent_s + """, %s, %s, %s, %s)""", initial_values + [finalize_value(item, "company_name"), finalize_value(item, "department_category"), finalize_value(item, "department_id"), finalize_value(item, "department_name")]
     elif table_name == "greenhouse_jobs_outline":
