@@ -21,7 +21,7 @@ S3_HTML_PATH = "scrapy/{source}/{bot_name}/{partitions}/{file_name}"
 DEFAULT_HTML = "https://blank.org"
 
 #Scrapy Logging
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'WARNING'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'job_scraper (+http://www.yourdomain.com)'
