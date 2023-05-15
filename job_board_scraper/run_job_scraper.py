@@ -20,9 +20,9 @@ cursor.execute(os.environ.get("PAGES_TO_SCRAPE_QUERY"))
 careers_page_urls = cursor.fetchall()
 cursor.close()
 connection.close()
+run_hash = util.hash_ids.encode(int(time.time()))
 
 for i, url in enumerate(careers_page_urls):
-    run_hash = util.hash_ids.encode(i, int(time.time()))
     careers_page_url = url[0] #UnTuple-ify
     logger.info(f"url = {careers_page_url} {careers_page_urls}")
     if careers_page_url.split(".")[1] == "greenhouse":
