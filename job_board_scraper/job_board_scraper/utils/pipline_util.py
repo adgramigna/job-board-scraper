@@ -8,7 +8,7 @@ def set_initial_table_schema(spider_name):
         , source text
         , run_hash text
         , raw_html_file_location text
-        , existing_html_used boolean
+        , existing_html_used int
     """
 
 def create_table_schema(table_name, initial_table_schema = ""):
