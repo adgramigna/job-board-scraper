@@ -47,6 +47,8 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
             il.add_value("source", self.html_source)
             il.add_value("company_name", self.company_name)
             il.add_value("run_hash", self.run_hash)
+            il.add_value("raw_html_file_location", self.s3_html_path)
+            il.add_value("existing_html_used", self.use_existing_html)
 
             yield il.load_item()
             # self.logger.info(f"{dep_xpath} Department here")

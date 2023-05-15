@@ -68,6 +68,10 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     @property
     def company_name(self):
         return self.html_source.split("/")[-1]
+
+    @property
+    def existing_html_used(self):
+        return self.html_file == ""
     
     def determine_partitions(self):
         return f"date={self.current_date_utc}/company={self.company_name}"
@@ -129,6 +133,8 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             il.add_value("source", self.html_source)
             il.add_value("company_name", self.company_name)
             il.add_value("run_hash", self.run_hash)
+            il.add_value("raw_html_file_location", self.s3_html_path)
+            il.add_value("existing_html_used", self.existing_html_used)
 
             yield il.load_item()
 
