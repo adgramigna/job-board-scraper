@@ -47,7 +47,7 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
             il.add_value("updated_at", self.updated_at)
             il.add_value("source", self.html_source)
             il.add_value("run_hash", self.run_hash)
-            il.add_value("raw_html_file_location", "s3://" + self.settings["S3_HTML_BUCKET"]+ "/" + self.s3_html_path)
+            il.add_value("raw_html_file_location", self.full_s3_html_path)
             il.add_value("existing_html_used", self.existing_html_used)
             # self.logger.info(f'{i} {j} {k} {job_xpath} xpth')
             yield il.load_item()
