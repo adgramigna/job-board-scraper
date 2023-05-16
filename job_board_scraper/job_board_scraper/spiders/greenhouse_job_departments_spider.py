@@ -71,7 +71,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
 
     @property
     def existing_html_used(self):
-        return int(self.html_file == "")
+        return int(self.html_file != "")
 
     @property
     def full_s3_html_path(self):
