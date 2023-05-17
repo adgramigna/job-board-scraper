@@ -31,6 +31,7 @@ jobs_outline_unnested as (
 outline_joined_to_depts as (
     select 
         jobs_outline_unnested.*,
+        greenhouse_job_departments.company_name,
         case when greenhouse_job_departments.department_category = 'level-0' then greenhouse_job_departments.department_name end as primary_department,
         case when greenhouse_job_departments.department_category = 'level-1' then greenhouse_job_departments.department_name end as secondary_department,
         case when greenhouse_job_departments.department_category = 'level-2' then greenhouse_job_departments.department_name end as tertiary_department
@@ -56,6 +57,7 @@ select distinct
     outline_joined_to_depts.created_at_date,
     outline_joined_to_depts.updated_at_date,
     outline_joined_to_depts.source,
+    outline_joined_to_depts.company_name,
     outline_joined_to_depts.uses_existing_html,
     outline_joined_to_depts.location,
     outline_joined_to_depts.office_ids,
