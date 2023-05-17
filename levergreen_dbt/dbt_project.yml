@@ -38,6 +38,8 @@ models:
       +enabled: false
     staging:
       +materialized: view
+    intermediate:
+      +materialized: view #switch tgo ephemeral
       # greenhouse:
         # +schema: greenhouse
       # lever:
