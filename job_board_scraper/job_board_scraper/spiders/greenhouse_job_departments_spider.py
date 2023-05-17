@@ -23,8 +23,9 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
         self.spider_id = kwargs.pop("spider_id", 1)
         self.use_existing_html = kwargs.pop("use_existing_html", 0)
-        self.careers_page_url = kwargs.pop("careers_page_url", "")
-        self.run_hash = kwargs.pop("run_hash", "")
+        self.careers_page_url = kwargs.pop("careers_page_url")
+        self.run_hash = kwargs.pop("run_hash")
+        self.url_id = kwargs.pop("url_id", 0)
         self.html_source = self.careers_page_url[:-1] if self.careers_page_url[-1] == '/' else self.careers_page_url
         self.settings = get_project_settings()
         self.current_time = time.time()
@@ -105,6 +106,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         return util.hash_ids.encode(
             self.spider_id,
             i,
+            self.url_id,
             int(self.created_at)
         )
 

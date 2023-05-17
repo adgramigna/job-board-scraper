@@ -26,8 +26,8 @@ for i, url in enumerate(careers_page_urls):
     careers_page_url = url[0] #UnTuple-ify
     logger.info(f"url = {careers_page_url} {careers_page_urls}")
     if careers_page_url.split(".")[1] == "greenhouse":
-        process.crawl(GreenhouseJobDepartmentsSpider, careers_page_url = careers_page_url, use_existing_html=True, run_hash=run_hash)
-        process.crawl(GreenhouseJobsOutlineSpider, careers_page_url = careers_page_url, use_existing_html=True, run_hash=run_hash)
+        process.crawl(GreenhouseJobDepartmentsSpider, careers_page_url = careers_page_url, use_existing_html=True, run_hash=run_hash, url_id=i)
+        process.crawl(GreenhouseJobsOutlineSpider, careers_page_url = careers_page_url, use_existing_html=True, run_hash=run_hash, url_id=i)
     elif careers_page_url.split(".")[1] == "lever":
-        process.crawl(LeverJobsOutlineSpider, careers_page_url = careers_page_url, use_existing_html=True, run_hash=run_hash)
+        process.crawl(LeverJobsOutlineSpider, careers_page_url = careers_page_url, use_existing_html=True, run_hash=run_hash, url_id=i)
 process.start()
