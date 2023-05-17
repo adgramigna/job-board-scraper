@@ -19,7 +19,8 @@ sources:
           - dbt_expectations.expect_table_columns_to_match_set:
               column_list: ["id", "levergreen_id", "created_at", "updated_at",
                "source", "company_name", "department_category", "department_id",
-               "department_name"]
+               "department_name",  "existing_html_used",
+               "raw_html_file_location", "run_hash"]
         columns:
           - name: id
             description: serial id created by postgres upon insertion
@@ -64,7 +65,8 @@ sources:
           - dbt_expectations.expect_table_columns_to_match_set:
               column_list: ["id", "levergreen_id", "created_at", "updated_at",
                "source", "department_ids", "location", "office_ids",
-               "opening_link", "opening_title"]
+               "opening_link", "opening_title", "existing_html_used", "run_hash",
+               "raw_html_file_location"]
         columns:
         - name: id
           description: serial id created by postgres upon insertion
@@ -109,3 +111,9 @@ sources:
           description: Name of the role
           tests:
             - not_null
+        - name: raw_html_file_location
+          description: S3 bucket where the scraped data is stored
+        - name: uses_existing_html
+          description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
+        - name: run_hash
+          description: Hashed value using hash ids to identify the id of a particular scraped

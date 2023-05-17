@@ -21,7 +21,8 @@ sources:
           - dbt_expectations.expect_table_columns_to_match_set:
               column_list: ["id", "levergreen_id", "created_at", "updated_at",
                "source", "department_names", "location", "workplace_type",
-               "opening_link", "opening_title", "company_name"]
+               "opening_link", "opening_title", "company_name",  "existing_html_used",
+               "raw_html_file_location", "run_hash"]
         columns:
         - name: id
           description: serial id created by postgres upon insertion

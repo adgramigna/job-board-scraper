@@ -9,7 +9,8 @@ models:
         - dbt_expectations.expect_table_columns_to_match_set:
             column_list: ["id", "levergreen_id", "created_at_utc", "updated_at_utc",
              "source", "company_name", "department_category", "department_id",
-             "department_name"]
+             "department_name", "uses_existing_html", "raw_html_file_location",
+             "run_hash"]
     columns:
       - name: id
         description: serial id created by postgres upon insertion.
@@ -29,6 +30,12 @@ models:
         description: Name of the Greenhouse Department
       - name: company_name
         description: Company name from Greenhouse. Taken by grabbing the end of the source.
+      - name: raw_html_file_location
+        description: S3 bucket where the scraped data is stored
+      - name: uses_existing_html
+        description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
+      - name: run_hash
+        description: Hashed value using hash ids to identify the id of a particular scraped
 
   - name: stg_greenhouse__jobs_outline
     description: >
@@ -38,7 +45,8 @@ models:
       - dbt_expectations.expect_table_columns_to_match_set:
           column_list: ["id", "levergreen_id", "created_at_utc", "updated_at_utc",
             "source", "department_ids", "location", "office_ids",
-            "opening_link", "opening_title"]
+            "full_opening_link", "opening_title", "uses_existing_html",
+            "raw_html_file_location", "run_hash"]
     columns:
       - name: id
         description: serial id created by postgres upon insertion
@@ -56,7 +64,14 @@ models:
         description: Comma separated list of of office_ids. Sometimes null in the source data, not sure why
       - name: location
         description: Comma separated list of locations
-      - name: opening_link
-        description: Source of the actual job posting
+      - name: full_opening_link
+        description: Source of the actual job posting. Scraped value is only the suffix of the link, here we clean to have the full link.
       - name: opening_title
         description: Name of the role
+      - name: raw_html_file_location
+        description: S3 bucket where the scraped data is stored
+      - name: uses_existing_html
+        description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
+      - name: run_hash
+        description: Hashed value using hash ids to identify the id of a particular scraped
+        
