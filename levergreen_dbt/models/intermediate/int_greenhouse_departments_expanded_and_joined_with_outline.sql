@@ -31,9 +31,9 @@ jobs_outline_unnested as (
 outline_joined_to_depts as (
     select 
         jobs_outline_unnested.*,
-        case when department_category = 'level-0' then department_name end as primary_department,
-        case when department_category = 'level-1' then department_name end as secondary_department,
-        case when department_category = 'level-2' then department_name end as tertiary_department
+        case when greenhouse_job_departments.department_category = 'level-0' then greenhouse_job_departments.department_name end as primary_department,
+        case when greenhouse_job_departments.department_category = 'level-1' then greenhouse_job_departments.department_name end as secondary_department,
+        case when greenhouse_job_departments.department_category = 'level-2' then greenhouse_job_departments.department_name end as tertiary_department
     from jobs_outline_unnested
     left join greenhouse_job_departments on jobs_outline_unnested.source = greenhouse_job_departments.source
         and jobs_outline_unnested.department_id = greenhouse_job_departments.department_id
@@ -63,6 +63,7 @@ select distinct
     outline_joined_to_depts.opening_title,
     departments_aggregated.primary_department,
     departments_aggregated.secondary_department,
-    departments_aggregated.tertiary_department
+    departments_aggregated.tertiary_department,
+    outline_joined_to_depts.run_hash
 from outline_joined_to_depts
 inner join departments_aggregated on outline_joined_to_depts.id = departments_aggregated.id
