@@ -15,7 +15,7 @@ with greenhouse_outlines_by_levergreen_id as (
             'greenhouse',
             'greenhouse_jobs_outline'
         ) }}
-    where existing_html_used is not null
+    where updated_at > 1684294508
 )
 
 select

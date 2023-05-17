@@ -14,7 +14,7 @@ with lever_outlines_by_levergreen_id as (
             'lever',
             'lever_jobs_outline'
         ) }}
-    where existing_html_used is not null
+    where updated_at > 1684294508
 )
 
 select
