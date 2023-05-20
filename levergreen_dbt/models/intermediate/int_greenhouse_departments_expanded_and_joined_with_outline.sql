@@ -24,6 +24,7 @@ jobs_outline_unnested as (
         greenhouse_jobs_outline.office_ids,
         greenhouse_jobs_outline.full_opening_link, 
         greenhouse_jobs_outline.opening_title,
+        greenhouse_jobs_outline.job_board,
         lower(greenhouse_jobs_outline.location) like '%remote%' as is_remote,
         department_ids_unnested.department_id
     from greenhouse_jobs_outline, unnest(string_to_array(department_ids, ',')) as department_ids_unnested(department_id)
@@ -67,6 +68,7 @@ select distinct
     departments_aggregated.primary_department,
     departments_aggregated.secondary_department,
     departments_aggregated.tertiary_department,
-    outline_joined_to_depts.run_hash
+    outline_joined_to_depts.run_hash,
+    outline_joined_to_depts.job_board
 from outline_joined_to_depts
 inner join departments_aggregated on outline_joined_to_depts.id = departments_aggregated.id

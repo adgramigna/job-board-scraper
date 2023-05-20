@@ -33,7 +33,8 @@ select
     workplace_type,
     opening_link as full_opening_link,
     opening_title,
-    company_name
+    company_name,
+    split_part(source,'.',2) as job_board
 from
     lever_outlines_by_levergreen_id
 where

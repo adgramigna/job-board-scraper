@@ -30,7 +30,8 @@ select
     company_name,
     department_id,
     department_category,
-    department_name
+    department_name,
+    split_part(source,'.',2) as job_board
 from
     greenhouse_departments_by_levergreen_id
 where

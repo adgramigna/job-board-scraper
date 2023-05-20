@@ -17,6 +17,7 @@ jobs_outline_unnested as (
         lever_jobs_outline.opening_title,
         lever_jobs_outline.workplace_type = 'Remote' as is_remote,
         lever_jobs_outline.company_name,
+        lever_jobs_outline.job_board,
         trim(department_ids_unnested.department_name) as department_name,
         department_ids_unnested.department_level
     from lever_jobs_outline, unnest(string_to_array(lever_jobs_outline.department_names, U&'\2013')) with ordinality as department_ids_unnested(department_name, department_level)
@@ -60,6 +61,7 @@ select distinct
     departments_aggregated.primary_department,
     departments_aggregated.secondary_department,
     departments_aggregated.tertiary_department,
-    jobs_outline_unnested.run_hash
+    jobs_outline_unnested.run_hash,
+    jobs_outline_unnested.job_board
 from jobs_outline_unnested
 inner join departments_aggregated on jobs_outline_unnested.id = departments_aggregated.id

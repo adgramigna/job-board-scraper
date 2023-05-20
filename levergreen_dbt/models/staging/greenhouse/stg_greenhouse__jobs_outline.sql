@@ -33,7 +33,8 @@ select
     location,
     office_ids,
     full_opening_link,
-    opening_title
+    opening_title,
+    split_part(source,'.',2) as job_board
     --TODO:
     --is_active
     --days_active
