@@ -41,6 +41,7 @@ models:
       +schema: core
       +tags:
         - "hightouch"
+        - "test"
       # greenhouse:
         # +schema: greenhouse
       # lever:
