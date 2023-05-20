@@ -32,14 +32,12 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   levergreen_dbt:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
-      +enabled: false
     staging:
       +materialized: view
     intermediate:
       +materialized: view #switch tgo ephemeral
+    marts:
+      +materialized: table
       # greenhouse:
         # +schema: greenhouse
       # lever:
