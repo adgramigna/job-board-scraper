@@ -38,6 +38,9 @@ models:
       +materialized: view #switch tgo ephemeral
     marts:
       +materialized: table
+      +schema: core
+      +tags:
+        - "hightouch"
       # greenhouse:
         # +schema: greenhouse
       # lever:
