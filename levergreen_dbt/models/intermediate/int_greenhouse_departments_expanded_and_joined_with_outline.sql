@@ -24,6 +24,7 @@ jobs_outline_unnested as (
         greenhouse_jobs_outline.office_ids,
         greenhouse_jobs_outline.full_opening_link, 
         greenhouse_jobs_outline.opening_title,
+        lower(greenhouse_jobs_outline.location) like '%remote%' as is_remote,
         department_ids_unnested.department_id
     from greenhouse_jobs_outline, unnest(string_to_array(department_ids, ',')) as department_ids_unnested(department_id)
 ),
@@ -62,6 +63,7 @@ select distinct
     outline_joined_to_depts.location,
     outline_joined_to_depts.full_opening_link, 
     outline_joined_to_depts.opening_title,
+    outline_joined_to_depts.is_remote,
     departments_aggregated.primary_department,
     departments_aggregated.secondary_department,
     departments_aggregated.tertiary_department,
