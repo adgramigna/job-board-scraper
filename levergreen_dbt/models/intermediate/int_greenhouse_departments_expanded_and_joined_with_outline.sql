@@ -12,20 +12,20 @@ greenhouse_job_departments as (
 
 jobs_outline_unnested as (
     select
-        id,
-        levergreen_id,
-        DATE(created_at_utc) as created_at_date,
-        DATE(updated_at_utc) as updated_at_date,
-        source,
-        uses_existing_html,
-        raw_html_file_location,
-        run_hash,
-        unnest(string_to_array(department_ids, ',')) as department_id,
-        location,
-        office_ids,
-        full_opening_link, 
-        opening_title    
-    from greenhouse_jobs_outline
+        greenhouse_jobs_outline.id,
+        greenhouse_jobs_outline.levergreen_id,
+        greenhouse_jobs_outline.created_date_utc,
+        greenhouse_jobs_outline.updated_date_utc,
+        greenhouse_jobs_outline.source,
+        greenhouse_jobs_outline.uses_existing_html,
+        greenhouse_jobs_outline.raw_html_file_location,
+        greenhouse_jobs_outline.run_hash,
+        greenhouse_jobs_outline.location,
+        greenhouse_jobs_outline.office_ids,
+        greenhouse_jobs_outline.full_opening_link, 
+        greenhouse_jobs_outline.opening_title,
+        department_ids_unnested.department_id
+    from greenhouse_jobs_outline, unnest(string_to_array(department_ids, ',')) as department_ids_unnested(department_id)
 ),
 
 outline_joined_to_depts as (
@@ -54,13 +54,12 @@ departments_aggregated as (
 select distinct
     outline_joined_to_depts.id,
     outline_joined_to_depts.levergreen_id,
-    outline_joined_to_depts.created_at_date,
-    outline_joined_to_depts.updated_at_date,
+    outline_joined_to_depts.created_date_utc,
+    outline_joined_to_depts.updated_date_utc,
     outline_joined_to_depts.source,
     outline_joined_to_depts.company_name,
     outline_joined_to_depts.uses_existing_html,
     outline_joined_to_depts.location,
-    outline_joined_to_depts.office_ids,
     outline_joined_to_depts.full_opening_link, 
     outline_joined_to_depts.opening_title,
     departments_aggregated.primary_department,
