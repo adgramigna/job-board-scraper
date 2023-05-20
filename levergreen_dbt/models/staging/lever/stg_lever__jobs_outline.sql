@@ -14,7 +14,7 @@ with lever_outlines_by_levergreen_id as (
             'lever',
             'lever_jobs_outline'
         ) }}
-    where updated_at > 1684294508
+    where updated_at > 1684600000
 )
 
 select
@@ -22,6 +22,8 @@ select
     levergreen_id,
     created_at_utc,
     updated_at_utc,
+    DATE(created_at_utc) as created_date_utc,
+    DATE(updated_at_utc) as updated_date_utc,
     source,
     uses_existing_html,
     raw_html_file_location, 
@@ -29,7 +31,7 @@ select
     department_names,
     location,
     workplace_type,
-    opening_link,
+    opening_link as full_opening_link,
     opening_title,
     company_name
 from

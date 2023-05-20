@@ -14,13 +14,15 @@ with greenhouse_departments_by_levergreen_id as (
             'greenhouse',
             'greenhouse_job_departments'
         ) }}
-    where updated_at > 1684294508
+    where updated_at > 1684600000
 )
 select
     id,
     levergreen_id,
     created_at_utc,
     updated_at_utc,
+    DATE(created_at_utc) as created_date_utc,
+    DATE(updated_at_utc) as updated_date_utc,
     source,
     uses_existing_html,
     raw_html_file_location,
