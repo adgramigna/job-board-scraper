@@ -26,6 +26,7 @@ all_postings_with_earliest_and_latest as (
 
 select *,
     case
+        when not is_active then 'Inactive'
         when days_active > 90 then 'Stale'
         when days_active > 60 then 'Old'
         when days_active > 30 then 'Medium'
