@@ -9,8 +9,9 @@ models:
       - dbt_expectations.expect_table_columns_to_match_set:
           column_list: ["id", "levergreen_id", "created_at_utc", "updated_at_utc",
            "source", "department_names", "location", "workplace_type",
-           "opening_link", "opening_title", "company_name", "uses_existing_html",
-           "raw_html_file_location", "run_hash"]
+           "full_opening_link", "opening_title", "company_name", "uses_existing_html",
+           "raw_html_file_location", "run_hash", "created_date_utc", "updated_date_utc",
+           "job_board"]
     columns:
     - name: id
       description: serial id created by postgres upon insertion
