@@ -29,7 +29,7 @@ jobs:
           echo $MY_IP
     
       - name: Fallback Obtain IP Address
-        if: {{ env.MY_IP }} == "Bad Gateway"
+        if: ${{ env.MY_IP }} == "Bad Gateway"
         run: |
           echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
           echo $MY_IP
