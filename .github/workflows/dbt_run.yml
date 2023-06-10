@@ -10,6 +10,9 @@ jobs:
     name: Run dbt
     # needs: run_script
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
