@@ -85,6 +85,85 @@ jobs:
           --protocol tcp \
           --port 5432 \
           --cidr ${{ env.MY_IP }}/32
+
+  run_dbt:
+    name: Run dbt
+    needs: run_script
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
       
+      - name: Obtain IP Address
+        run: |
+          echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
+          echo $MY_IP
+  
+      - name: Fallback Obtain IP Address
+        if: ${{ env.MY_IP }} == "Bad Gateway"
+        run: |
+          echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
+          echo $MY_IP
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Github-Actions-Role
+          aws-region: ${{ secrets.AWS_REGION }}
+      
+      - name: Whitelist this IP
+        run: |
+          aws ec2 authorize-security-group-ingress \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --protocol tcp \
+          --port 5432 \
+          --cidr ${{ env.MY_IP }}/32
+        
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+    
+      - name: Install dbt dependencies
+        run: cd levergreen_dbt && dbt deps
+
+      - name: Build dbt models
+        run: cd levergreen_dbt && dbt run
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
+      
+      - name: Generate dbt documentation
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: cd levergreen_dbt && dbt docs generate --no-compile
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
+
+      - name: Deploy to Github Pages
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./levergreen_dbt/target
+      
+      - name: Deauthorize IP
+        if: ${{ always() }}
+        run: |
+          aws ec2 revoke-security-group-ingress \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --protocol tcp \
+          --port 5432 \
+          --cidr ${{ env.MY_IP }}/32      
 
 
