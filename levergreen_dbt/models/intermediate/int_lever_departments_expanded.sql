@@ -24,8 +24,6 @@ jobs_outline_unnested as (
     --uses unicode character for dash from lever, different than normal dash. Normal: -, Lever: –.
 ),
 
-{# select * from jobs_outline_unnested #}
-
 departments_aggregated as (
     select 
         id,
@@ -35,16 +33,6 @@ departments_aggregated as (
     from jobs_outline_unnested
     group by 1
 )
-
-{# departments_aggregated as (
-    select 
-        id,
-        max(primary_department) as primary_department,
-        max(secondary_department) as secondary_department,
-        max(tertiary_department) as tertiary_department
-    from outline_joined_to_depts
-    group by 1
-) #}
 
 select distinct
     jobs_outline_unnested.id,
