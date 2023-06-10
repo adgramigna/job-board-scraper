@@ -10,7 +10,6 @@ on:
 jobs:
   run_dbt:
     name: Run dbt
-    # needs: run_script
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -22,30 +21,30 @@ jobs:
         with:
           python-version: '3.9'
       
-      # - name: Obtain IP Address
-      #   run: |
-      #     echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
-      #     echo $MY_IP
+      - name: Obtain IP Address
+        run: |
+          echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
+          echo $MY_IP
   
-      # - name: Fallback Obtain IP Address
-      #   if: ${{ env.MY_IP }} == "Bad Gateway"
-      #   run: |
-      #     echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
-      #     echo $MY_IP
+      - name: Fallback Obtain IP Address
+        if: ${{ env.MY_IP }} == "Bad Gateway"
+        run: |
+          echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
+          echo $MY_IP
       
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Github-Actions-Role
-      #     aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Github-Actions-Role
+          aws-region: ${{ secrets.AWS_REGION }}
       
-      # - name: Whitelist this IP
-      #   run: |
-      #     aws ec2 authorize-security-group-ingress \
-      #     --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
-      #     --protocol tcp \
-      #     --port 5432 \
-      #     --cidr ${{ env.MY_IP }}/32
+      - name: Whitelist this IP
+        run: |
+          aws ec2 authorize-security-group-ingress \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --protocol tcp \
+          --port 5432 \
+          --cidr ${{ env.MY_IP }}/32
         
       - name: Install dependencies
         run: |
@@ -79,12 +78,12 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./levergreen_dbt/target
       
-      # - name: Deauthorize IP
-      #   if: ${{ always() }}
-      #   run: |
-      #     aws ec2 revoke-security-group-ingress \
-      #     --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
-      #     --protocol tcp \
-      #     --port 5432 \
-      #     --cidr ${{ env.MY_IP }}/32
+      - name: Deauthorize IP
+        if: ${{ always() }}
+        run: |
+          aws ec2 revoke-security-group-ingress \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --protocol tcp \
+          --port 5432 \
+          --cidr ${{ env.MY_IP }}/32
 
