@@ -2,3 +2,6 @@
 target/
 dbt_packages/
 logs/
+
+#generated from dbt docs generate
+.user.yml
