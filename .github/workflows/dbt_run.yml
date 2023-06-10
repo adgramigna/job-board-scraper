@@ -22,11 +22,17 @@ jobs:
           echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
           echo $MY_IP
   
-      - name: Fallback Obtain IP Address
-        if: ${{ env.MY_IP }} == "Bad Gateway"
-        run: |
-          echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
-          echo $MY_IP
+      # - name: Fallback Obtain IP Address
+      #   if: ${{ env.MY_IP }} == "Bad Gateway"
+      #   run: |
+      #     echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
+      #     echo $MY_IP
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/Github-Actions-Role
+          aws-region: ${{ secrets.AWS_REGION }}
       
       - name: Whitelist this IP
         run: |
