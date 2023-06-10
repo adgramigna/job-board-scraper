@@ -33,8 +33,14 @@ models:
     columns:
       - name: id
         description: serial id created by postgres upon insertion.
+        tests:
+          - not_null 
+          - unique
       - name: levergreen_id
         description: Id from Levergreen scraper. Unique relative to the HTML file used.
+        tests:
+          - not_null 
+          - unique
       - name: created_date_utc
         description: Timestamp of when the greenhouse site was scraped, casted to UTC, timezone shown. If we used existing HTML, this field is not updated.
       - name: created_date_utc
@@ -120,8 +126,14 @@ models:
     columns:
       - name: id
         description: serial id created by postgres upon insertion.
+        tests:
+          - not_null 
+          - unique
       - name: levergreen_id
         description: Id from Levergreen scraper. Unique relative to the HTML file used.
+        tests:
+          - not_null 
+          - unique
       - name: created_date_utc
         description: Timestamp of when the greenhouse site was scraped, casted to UTC, timezone shown. If we used existing HTML, this field is not updated.
       - name: created_date_utc
