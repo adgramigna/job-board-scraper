@@ -1,5 +1,5 @@
 with all_postings as (
-    select * from {{ ref('int_greenhouse_departments_expanded_and_joined_with_outline') }}
+    select * from {{ ref('int_greenhouse_departments_expanded_with_outline') }}
     union all
     select * from {{ ref('int_lever_departments_expanded') }}
 ),
