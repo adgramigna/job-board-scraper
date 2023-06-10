@@ -7,10 +7,6 @@ greenhouse_job_departments as (
     select * from "postgres"."public"."stg_greenhouse__job_departments"
 ),
 
-    --TODO:
-    --is_active
-    --days_active
-
 jobs_outline_unnested as (
     select
         greenhouse_jobs_outline.id,
@@ -100,8 +96,6 @@ jobs_outline_unnested as (
     --uses unicode character for dash from lever, different than normal dash. Normal: -, Lever: –.
 ),
 
-
-
 departments_aggregated as (
     select 
         id,
@@ -111,8 +105,6 @@ departments_aggregated as (
     from jobs_outline_unnested
     group by 1
 )
-
-
 
 select distinct
     jobs_outline_unnested.id,
