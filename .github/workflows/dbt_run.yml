@@ -55,6 +55,11 @@ jobs:
 
       - name: Build dbt models
         run: cd levergreen_dbt && dbt run
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
       
       - name: Generate dbt documentation
         if: ${{ github.ref == 'refs/heads/main' }}
