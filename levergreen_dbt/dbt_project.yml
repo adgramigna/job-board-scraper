@@ -35,7 +35,7 @@ models:
     staging:
       +materialized: view
     intermediate:
-      +materialized: ephemeral
+      +materialized: view #keep as view so it shows up in documentation
     marts:
       +materialized: table
       +schema: core
