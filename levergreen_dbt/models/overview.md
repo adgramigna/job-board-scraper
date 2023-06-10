@@ -1,7 +1,6 @@
 {% docs __overview__ %}
 ### Links
-[Levergreen Website](https://levergreen.dev/)
-
+[Levergreen Website](https://levergreen.dev/)\
 [Github Repo](https://github.com/adgramigna/job-board-scraper/)
 # Levergreen dbt Data Model
 This website displays the data model of the Levergreen Job Scraper. We start by scraping data from the job boards Greenhouse
