@@ -1,0 +1,65 @@
+name: dbt Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run_dbt:
+    name: Run dbt
+    needs: run_script
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Obtain IP Address
+      run: |
+        echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
+        echo $MY_IP
+  
+    - name: Fallback Obtain IP Address
+      if: ${{ env.MY_IP }} == "Bad Gateway"
+      run: |
+        echo "MY_IP=$(curl https://ifconfig.me/ip)" >> $GITHUB_ENV
+        echo $MY_IP
+      
+      - name: Whitelist this IP
+        run: |
+          aws ec2 authorize-security-group-ingress \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --protocol tcp \
+          --port 5432 \
+          --cidr ${{ env.MY_IP }}/32
+    
+      - name: Install dbt dependencies
+        run: cd levergreen_dbt && dbt deps
+
+      - name: Build dbt models
+        run: cd levergreen_dbt && dbt run
+      
+      - name: Generate dbt documentation
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: cd levergreen_dbt && dbt docs generate --no-compile
+
+      - name: Deploy to Github Pages
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./levergreen_dbt/target
+      
+      - name: Deauthorize IP
+        if: ${{ always() }}
+        run: |
+          aws ec2 revoke-security-group-ingress \
+          --group-id ${{ secrets.AWS_PG_SECURITY_GROUP }} \
+          --protocol tcp \
+          --port 5432 \
+          --cidr ${{ env.MY_IP }}/32
+
