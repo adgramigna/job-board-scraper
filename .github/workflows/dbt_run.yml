@@ -1,9 +1,6 @@
 name: dbt Run
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: "0 8 * * *"
 
