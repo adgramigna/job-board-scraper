@@ -1,0 +1,23 @@
+levergreen_dbt:
+  outputs:
+    dev:
+      type: postgres
+      threads: 1
+      host:  "{{ env_var('PG_HOST') }}"
+      port: 5432
+      user: "{{ env_var('PG_USER') }}"
+      pass: "{{ env_var('PG_PASSWORD') }}"
+      dbname: "{{ env_var('PG_DATABASE') }}"
+      schema: public
+
+    prod:
+      type: postgres
+      threads: 1
+      host:  "{{ env_var('PG_HOST') }}"
+      port: 5432
+      user: "{{ env_var('PG_USER') }}"
+      pass: "{{ env_var('PG_PASSWORD') }}"
+      dbname: "{{ env_var('PG_DATABASE') }}"
+      schema: public
+
+  target: prod
