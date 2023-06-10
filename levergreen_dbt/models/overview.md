@@ -1,6 +1,6 @@
 {% docs __overview__ %}
 ### Links
-[Levergreen Website](https://corey542.softr.app/)
+[Levergreen Website](https://levergreen.dev/)
 
 [Github Repo](https://github.com/adgramigna/job-board-scraper/)
 # Levergreen dbt Data Model
