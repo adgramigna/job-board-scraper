@@ -9,6 +9,8 @@ and Lever and cleaning the data in our `stg_<job_board>__` staging models. We th
 in our `int_` intermediate models. Finally, we create our `marts` models containing `all_job_postings` scraped by Levergreen, and 
 `active_job_postings`
 
+
+
 ![Lineage](/assets/images/lineage_graph.png)
 
 {% enddocs %}
