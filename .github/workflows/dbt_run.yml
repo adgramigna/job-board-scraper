@@ -18,7 +18,7 @@ jobs:
           python-version: '3.9'
       
       - name: Obtain IP Address
-      run: |
+        run: |
         echo "MY_IP=$(curl https://api.ipify.org)" >> $GITHUB_ENV
         echo $MY_IP
   
