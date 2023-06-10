@@ -21,6 +21,10 @@ models:
       description: Timestamp of when the Lever site was scraped, casted to UTC, timezone shown. If we used existing HTML, this field is not updated.
     - name: updated_at_utc
       description: Timestamp of when the Lever site was scraped, casted to UTC, timezone shown.
+    - name: created_date_utc
+      description: Date of when the greenhouse site was scraped, casted to UTC. 
+    - name: updated_date_utc
+      description: Date of when the greenhouse site was scraped, casted to UTC.
     - name: source
       description: Greenhouse careers page source. 
     - name: department_names
@@ -29,7 +33,7 @@ models:
       description: Options for whether the role in in-person (on-site), remote, or hybrid.
     - name: location
       description: Single location where the job is posted. Seems more rigid than Greenhouse on first glance, only one posting.
-    - name: opening_link
+    - name: full_opening_link
       description: Source of the actual job posting
     - name: opening_title
       description: Name of the role
@@ -41,3 +45,8 @@ models:
       description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
     - name: run_hash
       description: Hashed value using hash ids to identify the id of a particular scraped
+    - name: job_board
+      description: Job board dervied from source
+      tests:
+        - accepted_values:
+            values: ['lever']
