@@ -143,7 +143,7 @@ get_earliest_and_latest_dates as (
 all_postings_with_earliest_and_latest as (
     select 
         all_postings.*, 
-        date(timezone('utc', '2023-06-08')) = all_postings.created_date_utc as is_active,
+        date(timezone('utc', now())) = all_postings.created_date_utc as is_active,
         earliest_and_latest.earliest_opening_date,
         earliest_and_latest.latest_opening_date,
         earliest_and_latest.latest_opening_date - earliest_and_latest.earliest_opening_date + 1 as days_active
