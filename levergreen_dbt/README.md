@@ -31,5 +31,5 @@ likely to open, what months have the most jobs posted, company posting history, 
 and how long it has been active, if at all.
 
 ### active_job_postings
-Here we filter `all_job_postings for only jobs which are active. The results of this are persisted to Airtable via Hightouch, and subsequently to our
+Here we filter `all_job_postings` for only jobs which are active. The results of this are persisted to Airtable via Hightouch, and subsequently to our
 Softr Website.
