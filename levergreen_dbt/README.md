@@ -14,7 +14,8 @@ in our `int_` intermediate models. Finally, we create our `marts` models contain
 To view, on the left menu, click `levergreen_dbt -> models -> staging`
 
 We have staging models for each job board. For Greenhouse, we chose to scrape departments and job information in two separate Scrapy Spiders.
-For Lever, we were able to get both in one spider. In these models we normalize our source data and make simple transformations.
+For Lever, we were able to get both in one spider. In these models we normalize our source data and make simple transformations. We also have
+a directory for an internal lookup table, but do not do any transformations with that table.
 
 ## Intermediate Models
 To view, on the left menu, click `levergreen_dbt -> models -> intermediate`
