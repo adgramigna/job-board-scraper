@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: levergreen
+    description: Internal data already existing in Postgres
+    schema: public
+    loader: manually_added
+
+    tables:
+      - name: job_board_urls
+        description: List of all the careers page urls to scrape.
+        tests:
+          - dbt_expectations.expect_table_columns_to_match_set:
+              column_list: ["id", "url", "is_enabled"]
+        columns:
+        - name: id
+          description: serial id created by postgres upon insertion
+          tests:
+            - unique
+            - not_null
+        - name: url
+          description: careers page to be scraped
+          tests:
+            - unique
+            - not_null
+        - name: is_enabled
+          description: boolean flag determining whether we are scraping this url in our daily runs
