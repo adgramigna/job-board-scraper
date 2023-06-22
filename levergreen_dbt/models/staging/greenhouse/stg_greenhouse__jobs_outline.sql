@@ -1,6 +1,7 @@
 with greenhouse_outlines_by_levergreen_id as (
     select
         *,
+        split_part(source,'.',2) as job_board,
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc,
         concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) as full_opening_link,
@@ -19,7 +20,7 @@ with greenhouse_outlines_by_levergreen_id as (
 )
 
 select
-    id,
+    concat(job_board,'_',id) as id,
     levergreen_id,
     created_at_utc,
     updated_at_utc,
@@ -34,10 +35,7 @@ select
     office_ids,
     full_opening_link,
     opening_title,
-    split_part(source,'.',2) as job_board
-    --TODO:
-    --is_active
-    --days_active
+    job_board
 from
     greenhouse_outlines_by_levergreen_id
 where
