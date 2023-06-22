@@ -6,6 +6,7 @@
     with lever_outlines_by_levergreen_id as (
     select
         *,
+        split_part(source,'.',2) as job_board,
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc,
         cast(cast(existing_html_used as int) as boolean) as uses_existing_html, 
@@ -20,7 +21,7 @@
 )
 
 select
-    id,
+    concat(job_board,'_',id) as id,
     levergreen_id,
     created_at_utc,
     updated_at_utc,
@@ -36,7 +37,7 @@ select
     opening_link as full_opening_link,
     opening_title,
     company_name,
-    split_part(source,'.',2) as job_board
+    job_board
 from
     lever_outlines_by_levergreen_id
 where
