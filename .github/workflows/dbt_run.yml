@@ -6,7 +6,7 @@ on:
 
 jobs:
   run_dbt:
-    name: Run dbt test
+    name: Run dbt
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -51,14 +51,14 @@ jobs:
       - name: Install dbt dependencies
         run: cd levergreen_dbt && dbt deps
 
-      - name: Build dbt models
-        run: cd levergreen_dbt && dbt test
+      - name: Run dbt models
+        run: cd levergreen_dbt && dbt run
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
-      
+
       - name: Generate dbt documentation
         if: ${{ github.ref == 'refs/heads/main' }}
         run: cd levergreen_dbt && dbt docs generate --no-compile
@@ -74,6 +74,22 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./levergreen_dbt/target
+    
+      - name: Test dbt models
+        run: cd levergreen_dbt && dbt test
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
+      
+      - name: Check Freshness of dbt models
+        run: cd levergreen_dbt && dbt source freshness
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
       
       - name: Deauthorize IP
         if: ${{ always() }}
