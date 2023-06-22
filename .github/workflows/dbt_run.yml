@@ -6,7 +6,7 @@ on:
 
 jobs:
   run_dbt:
-    name: Run dbt
+    name: Run dbt test
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -52,7 +52,7 @@ jobs:
         run: cd levergreen_dbt && dbt deps
 
       - name: Build dbt models
-        run: cd levergreen_dbt && dbt run
+        run: cd levergreen_dbt && dbt test
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
           PG_HOST: ${{ secrets.PG_HOST }}
