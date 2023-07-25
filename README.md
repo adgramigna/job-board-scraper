@@ -39,5 +39,5 @@ From the beginning of this project, I wanted to use [Softr](https://www.softr.io
 Softr is able to visualize my Airtable data in real time, and I was able to create a nice website to visualize the active job postings. On the website, we can filter for specific job categories, or for "Remote Only" roles. I've also added a suggestion box at the bottom for people to suggest companies they would like to see included in my list.
 
 ## Cost
-Maintainance for this project costs about $30/year, between my domain name https://levergreen.dev, and various AWS costs. Switching from AWS RDS to Neon  decreases the cost of maintainance by 80%!  
+Maintenance for this project costs about $30/year, between my domain name https://levergreen.dev, and various AWS costs. Switching from AWS RDS to Neon  decreases the cost of maintenance by 80%!  
 
