@@ -2,7 +2,7 @@
   
     
 
-  create  table "postgres"."core"."all_job_postings__dbt_tmp"
+  create  table "neondb"."core"."all_job_postings__dbt_tmp"
   
   
     as
@@ -10,11 +10,11 @@
   (
     with  __dbt__cte__int_greenhouse_departments_expanded_with_outline as (
 with greenhouse_jobs_outline as (
-    select * from "postgres"."public"."stg_greenhouse__jobs_outline"
+    select * from "neondb"."public"."stg_greenhouse__jobs_outline"
 ),
 
 greenhouse_job_departments as (
-    select * from "postgres"."public"."stg_greenhouse__job_departments"
+    select * from "neondb"."public"."stg_greenhouse__job_departments"
 ),
 
 jobs_outline_unnested as (
@@ -81,7 +81,7 @@ from outline_joined_to_depts
 inner join departments_aggregated on outline_joined_to_depts.id = departments_aggregated.id
 ),  __dbt__cte__int_lever_departments_expanded as (
 with lever_jobs_outline as (
-    select * from "postgres"."public"."stg_lever__jobs_outline"
+    select * from "neondb"."public"."stg_lever__jobs_outline"
 ),
 
 jobs_outline_unnested as (

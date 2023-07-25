@@ -1,5 +1,5 @@
 
-  create view "postgres"."public"."stg_greenhouse__job_departments__dbt_tmp"
+  create view "neondb"."public"."stg_greenhouse__job_departments__dbt_tmp"
     
     
   as (
@@ -15,7 +15,7 @@
                 updated_at
         ) as earliest_levergreen_id_row
     from
-        "postgres"."public"."greenhouse_job_departments"
+        "neondb"."public"."greenhouse_job_departments"
     where updated_at > 1684600000
 )
 select

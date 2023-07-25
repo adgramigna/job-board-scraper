@@ -11,7 +11,7 @@ with lever_outlines_by_levergreen_id as (
                 updated_at
         ) as earliest_levergreen_id_row
     from
-        "postgres"."public"."lever_jobs_outline"
+        "neondb"."public"."lever_jobs_outline"
     where updated_at > 1684600000
 )
 

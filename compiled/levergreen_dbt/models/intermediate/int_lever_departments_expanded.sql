@@ -1,5 +1,5 @@
 with lever_jobs_outline as (
-    select * from "postgres"."public"."stg_lever__jobs_outline"
+    select * from "neondb"."public"."stg_lever__jobs_outline"
 ),
 
 jobs_outline_unnested as (

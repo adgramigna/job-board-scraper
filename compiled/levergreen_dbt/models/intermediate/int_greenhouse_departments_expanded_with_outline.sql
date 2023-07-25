@@ -1,9 +1,9 @@
 with greenhouse_jobs_outline as (
-    select * from "postgres"."public"."stg_greenhouse__jobs_outline"
+    select * from "neondb"."public"."stg_greenhouse__jobs_outline"
 ),
 
 greenhouse_job_departments as (
-    select * from "postgres"."public"."stg_greenhouse__job_departments"
+    select * from "neondb"."public"."stg_greenhouse__job_departments"
 ),
 
 jobs_outline_unnested as (

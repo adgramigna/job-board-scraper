@@ -10,7 +10,7 @@ with greenhouse_departments_by_levergreen_id as (
                 updated_at
         ) as earliest_levergreen_id_row
     from
-        "postgres"."public"."greenhouse_job_departments"
+        "neondb"."public"."greenhouse_job_departments"
     where updated_at > 1684600000
 )
 select
