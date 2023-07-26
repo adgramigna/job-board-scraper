@@ -1,21 +1,40 @@
-with lever_outlines_by_levergreen_id as (
+with convert_unix_to_ts as (
+    select 
+        *,
+        to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
+        to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc
+    from {{ source(
+            'lever',
+            'lever_jobs_outline'
+        ) }}
+    {# where updated_at > 1684600000 #}
+),
+
+convert_ts_to_date as (
     select
         *,
-        split_part(source,'.',2) as job_board,
-        to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
-        to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc,
-        cast(cast(existing_html_used as int) as boolean) as uses_existing_html, 
+        date(created_at_utc) as created_date_utc,
+        date(updated_at_utc) as updated_date_utc,
         row_number() over(
             partition by levergreen_id
             order by
                 updated_at
         ) as earliest_levergreen_id_row
-    from
-        {{ source(
-            'lever',
-            'lever_jobs_outline'
-        ) }}
-    where updated_at > 1684600000
+    from convert_unix_to_ts
+),
+
+lever_outlines_by_levergreen_id as (
+    select
+        *,
+        split_part(source,'.',2) as job_board,
+        cast(cast(existing_html_used as int) as boolean) as uses_existing_html, 
+        row_number() over(
+            partition by opening_link, updated_date_utc
+            order by
+                updated_at
+        ) as earliest_opening_link_row
+    from convert_ts_to_date
+    where earliest_levergreen_id_row = 1
 )
 
 select
@@ -23,8 +42,8 @@ select
     levergreen_id,
     created_at_utc,
     updated_at_utc,
-    DATE(created_at_utc) as created_date_utc,
-    DATE(updated_at_utc) as updated_date_utc,
+    created_date_utc,
+    updated_date_utc,
     source,
     uses_existing_html,
     raw_html_file_location, 
@@ -39,4 +58,4 @@ select
 from
     lever_outlines_by_levergreen_id
 where
-    earliest_levergreen_id_row = 1
+    earliest_opening_link_row = 1
