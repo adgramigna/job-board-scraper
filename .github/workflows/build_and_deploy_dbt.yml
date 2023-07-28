@@ -1,16 +1,12 @@
-name: dbt Run
+name: dbt Build and Deploy
 
 on:
-  schedule:
-    - cron: "0 8 * * *"
+  workflow_dispatch: #Run manually when I update dbt pipeline 
 
 jobs:
-  run_dbt:
-    name: Run dbt
+  build_and_deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: write
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -33,7 +29,23 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
-
+    
+      - name: Generate dbt documentation
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: cd levergreen_dbt && dbt docs generate --no-compile
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
+  
+      - name: Deploy to Github Pages
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./levergreen_dbt/target
+        
       - name: Test dbt models
         run: cd levergreen_dbt && dbt test
         env:
@@ -41,7 +53,7 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
-      
+  
       - name: Check Freshness of dbt models
         run: cd levergreen_dbt && dbt source freshness
         env:
