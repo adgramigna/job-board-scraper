@@ -14,7 +14,7 @@ with greenhouse_departments_by_levergreen_id as (
             'greenhouse',
             'greenhouse_job_departments'
         ) }}
-    {# where updated_at > 1684600000 #}
+    where updated_at > 1684600000
 )
 select
     id,
