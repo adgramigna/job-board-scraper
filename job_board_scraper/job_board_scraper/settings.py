@@ -7,6 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 BOT_NAME = 'job_board_scraper'
 
 SPIDER_MODULES = ['job_board_scraper.spiders']
@@ -15,7 +19,7 @@ NEWSPIDER_MODULE = 'job_board_scraper.spiders'
 S3_BUCKET = "levergreen-data"
 S3_PATH = "scrapy/{bot_name}/{spider_name}/{partitions}/{file_name}"
 
-S3_HTML_BUCKET = "levergreen-raw-html"
+S3_HTML_BUCKET = os.environ.get("RAW_HTML_S3_BUCKET")
 S3_HTML_PATH = "scrapy/{source}/{bot_name}/{partitions}/{file_name}"
 
 DEFAULT_HTML = "https://blank.org"
