@@ -16,9 +16,6 @@ BOT_NAME = 'job_board_scraper'
 SPIDER_MODULES = ['job_board_scraper.spiders']
 NEWSPIDER_MODULE = 'job_board_scraper.spiders'
 
-S3_BUCKET = "levergreen-data"
-S3_PATH = "scrapy/{bot_name}/{spider_name}/{partitions}/{file_name}"
-
 S3_HTML_BUCKET = os.environ.get("RAW_HTML_S3_BUCKET")
 S3_HTML_PATH = "scrapy/{source}/{bot_name}/{partitions}/{file_name}"
 
@@ -77,8 +74,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'job_board_scraper.pipelines.JobScraperPipelinePostgres': 299,
-#    'job_scraper.pipelines.JobScraperPipelineParquet': 300,
+   'job_board_scraper.pipelines.JobScraperPipelinePostgres': 299
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
