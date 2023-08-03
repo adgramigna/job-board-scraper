@@ -20,7 +20,6 @@ I'll go in to detail on some environment variables that need to be defined to ru
     <li>AWS_SECRET_ACCESS_KEY</li>
     <li>AWS_REGION</li>
     </ol>
-    <br>
 
     Here is some information on how to get these, in the [boto3 doumentation](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html)
 2. You also need an S3 bucket to store your raw HTML scraped, or you choose to omit this part by removing the `export_html` function call. I have this variable defined in my environment variables as `RAW_HTML_S3_BUCKET`
@@ -31,7 +30,7 @@ I'll go in to detail on some environment variables that need to be defined to ru
     <li>PG_USER</li>
     <li>PG_PASSWORD</li>
     </ol>
-    <br>
+
 4. There  is one point in the code where we are querying Postgres to determine what urls we need to scrape. You need to create a table in your Postgres DB with at minimum the columns `id` (I did type SERIAL here), `url`, and `is_enabled`, which should be defaulted to true. **Here is where you must insert into this table the urls which you would like to scrape job postings from**. You can change `is_enabled` to false if you want to stop scraping a certain url. I had to do this with Ramp and OpenSea, as they opted for [Ashby](https://www.ashbyhq.com/) which is not supported (yet!). You need the environment variable, `PAGES_TO_SCRAPE_QUERY`, which should look something similar to this `select distinct url from <YOUR_URLS_TABLE> where is_enabled;`
 
 5. Finally, I opted to determine a unique id for a Levergreen record using [Hashids](https://github.com/davidaurelio/hashids-python), it looks they they rebranded to [Sqids](https://sqids.org/). For now, I'll keep the existing hashids implemenation. We need a salt in the hashids algorithm which can be any string. Save any string to the environment variable `HASHIDS_SALT`.
