@@ -2,6 +2,8 @@
 End Result: https://levergreen.dev  
 Data Documentation: https://adgramigna.github.io/job-board-scraper/#!/overview
 
+**[Local Deployment Guide](/local_deployment_instructions.md)**
+
 ![Data Flow](/assets/images/data_flow.jpg)
 
 ## Overall Summary
