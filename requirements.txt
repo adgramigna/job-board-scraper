@@ -6,3 +6,4 @@ pyarrow==11.0.0
 pandas==1.5.3
 psycopg2-binary==2.9.6
 dbt-postgres==1.6.0
+Twisted==22.10.0
