@@ -29,7 +29,8 @@ departments_aggregated as (
         id,
         max(case when department_level = 1 then department_name end) as primary_department,
         max(case when department_level = 2 then department_name end) as secondary_department,
-        max(case when department_level = 3 then department_name end) as tertiary_department
+        max(case when department_level = 3 then department_name end) as tertiary_department,
+        max(case when department_level = 4 then department_name end) as quaternary_department
     from jobs_outline_unnested
     group by 1
 )
@@ -49,6 +50,7 @@ select distinct
     departments_aggregated.primary_department,
     departments_aggregated.secondary_department,
     departments_aggregated.tertiary_department,
+    departments_aggregated.quaternary_department,
     jobs_outline_unnested.run_hash,
     jobs_outline_unnested.job_board
 from jobs_outline_unnested
