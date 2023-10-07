@@ -1,6 +1,6 @@
 # !/bin/bash
 cd ..
-total_size=${1}
+total_size=${1-200}
 chunk_size=${2-20} #default to chunks of 20
 lowest_id=1 #first serial id is 1.
 for ((i=$lowest_id;i<=$total_size;i++))
