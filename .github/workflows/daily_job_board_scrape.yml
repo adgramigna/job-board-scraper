@@ -33,6 +33,7 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
+          ID_COL: ${{secrets.ID_COL}}
           RAW_HTML_S3_BUCKET: ${{ secrets.RAW_HTML_S3_BUCKET }}
 
   run_dbt:
