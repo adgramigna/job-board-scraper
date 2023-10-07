@@ -21,8 +21,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
-      - name: Run Scrapy script
-        run: cd job_board_scraper && python run_job_scraper.py 
+      - name: Make shell script executable
+        run: cd job_board_scraper/shell_scripts && chmod +x run_job_scraper_chunked.sh
+      
+      - name: Run Shell script
+        run: cd job_board_scraper/shell_scripts && ./run_job_scraper_chunked.sh 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
