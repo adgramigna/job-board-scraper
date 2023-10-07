@@ -10,13 +10,15 @@ from job_board_scraper.spiders.greenhouse_job_departments_spider import Greenhou
 from job_board_scraper.spiders.lever_jobs_outline_spider import LeverJobsOutlineSpider
 from job_board_scraper.utils.postgres_wrapper import PostgresWrapper
 from job_board_scraper.utils import general as util
+from job_board_scraper.utils.scraper_util import parse_args
 from scrapy.utils.project import get_project_settings
 
 logger = logging.getLogger("logger")
 process = CrawlerProcess(get_project_settings())
 connection = psycopg2.connect(host=os.environ.get("PG_HOST"), user=os.environ.get("PG_USER"), password=os.environ.get("PG_PASSWORD"), dbname=os.environ.get("PG_DATABASE"))
 cursor = connection.cursor()
-cursor.execute(os.environ.get("PAGES_TO_SCRAPE_QUERY"))
+id_restriction, id_values = parse_args()
+cursor.execute(os.environ.get("PAGES_TO_SCRAPE_QUERY")+id_restriction, id_values)
 careers_page_urls = cursor.fetchall()
 cursor.close()
 connection.close()
