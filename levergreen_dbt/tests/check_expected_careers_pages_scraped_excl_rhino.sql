@@ -1,4 +1,4 @@
-{{ config(enabled=false) }}
+{{ config(enabled=true, severity = 'warn') }}
 --disable when Rhino has jobs
 
 -- here we are checking if the scraper did correctly scrape jobs for each careers_page
@@ -9,6 +9,7 @@ with expected_sources as (
     from {{ source('levergreen', 'job_board_urls') }}
     where is_enabled
     and url != 'https://boards.greenhouse.io/rhino' --rhino has no job postings active currently
+    and url != 'https://boards.greenhouse.io/supabase'
 ),
 
 actual_sources as (
