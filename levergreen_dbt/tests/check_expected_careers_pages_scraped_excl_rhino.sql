@@ -8,7 +8,6 @@ with expected_sources as (
     select distinct url as expected_source
     from {{ source('levergreen', 'job_board_urls') }}
     where is_enabled
-    and url != 'https://boards.greenhouse.io/rhino' --rhino has no job postings active currently
     and url != 'https://boards.greenhouse.io/supabase'
 ),
 
