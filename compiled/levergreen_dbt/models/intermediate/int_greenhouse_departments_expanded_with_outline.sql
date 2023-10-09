@@ -32,7 +32,8 @@ outline_joined_to_depts as (
         greenhouse_job_departments.company_name,
         case when greenhouse_job_departments.department_category = 'level-0' then greenhouse_job_departments.department_name end as primary_department,
         case when greenhouse_job_departments.department_category = 'level-1' then greenhouse_job_departments.department_name end as secondary_department,
-        case when greenhouse_job_departments.department_category = 'level-2' then greenhouse_job_departments.department_name end as tertiary_department
+        case when greenhouse_job_departments.department_category = 'level-2' then greenhouse_job_departments.department_name end as tertiary_department,
+        case when greenhouse_job_departments.department_category = 'level-3' then greenhouse_job_departments.department_name end as quaternary_department
     from jobs_outline_unnested
     left join greenhouse_job_departments on jobs_outline_unnested.source = greenhouse_job_departments.source
         and jobs_outline_unnested.department_id = greenhouse_job_departments.department_id
@@ -44,7 +45,8 @@ departments_aggregated as (
         id,
         max(primary_department) as primary_department,
         max(secondary_department) as secondary_department,
-        max(tertiary_department) as tertiary_department
+        max(tertiary_department) as tertiary_department,
+        max(quaternary_department) quaternary_department
     from outline_joined_to_depts
     group by 1
 )
@@ -64,6 +66,7 @@ select distinct
     departments_aggregated.primary_department,
     departments_aggregated.secondary_department,
     departments_aggregated.tertiary_department,
+    departments_aggregated.quaternary_department,
     outline_joined_to_depts.run_hash,
     outline_joined_to_depts.job_board
 from outline_joined_to_depts
