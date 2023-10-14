@@ -47,6 +47,9 @@ ROBOTSTXT_OBEY = True
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
+#Need dynamic allocation with multiprocessing
+TELNETCONSOLE_PORT = None #https://docs.scrapy.org/en/latest/topics/telnetconsole.html
+
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',

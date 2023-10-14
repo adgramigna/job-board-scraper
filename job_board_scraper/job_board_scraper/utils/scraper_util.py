@@ -1,15 +1,12 @@
-import os
-import sys
-from dotenv import load_dotenv
-load_dotenv()
-
-def parse_args():
-    try:
-        id_lower_bound = int(sys.argv[1])
-        id_upper_bound = int(sys.argv[2])
-        id_restriction = f""" and {os.environ.get("ID_COL")} >= %s and {os.environ.get("ID_COL")} < %s"""
-        id_values = tuple([id_lower_bound, id_upper_bound])
-    except:
-        id_restriction = ""
-        id_values = tuple()
-    return id_restriction, id_values
+def get_url_chunks(careers_page_urls, chunk_size):
+    url_chunks = []
+    single_chunk = []
+    for i, url in enumerate(careers_page_urls):
+        careers_page_url = url[0] #UnTuple-ify
+        single_chunk.append(careers_page_url)
+        if i % chunk_size == chunk_size - 1:
+            url_chunks.append(single_chunk)
+            single_chunk = []
+    if len(single_chunk) > 0:
+        url_chunks.append(single_chunk)
+    return url_chunks
