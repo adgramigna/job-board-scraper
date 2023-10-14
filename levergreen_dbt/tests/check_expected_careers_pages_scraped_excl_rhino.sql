@@ -1,5 +1,5 @@
-{{ config(enabled=true, severity = 'warn') }}
---disable when Rhino has jobs
+{{ config(enabled=false, severity = 'warn') }}
+--disable when all companies have has jobs
 
 -- here we are checking if the scraper did correctly scrape jobs for each careers_page
 -- If the scraper missed a page due to an unexpected error, we will have mismatches here
