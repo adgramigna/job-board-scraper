@@ -43,9 +43,13 @@ if __name__ == '__main__':
     processes = []
 
     for i, single_url_chunk in enumerate(url_chunks):
+        time.sleep(60)
         p = multiprocessing.Process(target=run_spider, args=(single_url_chunk, i))
+        time.sleep(60)
         processes.append(p)
+        time.sleep(60)
         p.start()
 
     for p in processes:
+        time.sleep(60)
         p.join()
