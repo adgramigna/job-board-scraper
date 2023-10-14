@@ -95,6 +95,7 @@ sources:
             - not_null:
                 config:  
                   severity: warn
+                  where: "opening_title != 'Don''t see the right opportunity? Apply here!' and opening_title != 'General Application'" #Exclude generic applications
         - name: office_ids
           description: Comma separated list of of office_ids. Sometimes null in the source data, not sure why
         - name: location
