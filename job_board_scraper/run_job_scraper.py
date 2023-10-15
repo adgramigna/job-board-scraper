@@ -29,7 +29,7 @@ def run_spider(single_url_chunk, chunk_number):
     process.start()
 
 if __name__ == '__main__':
-    chunk_size = 16
+    chunk_size = int(os.environ.get("CHUNK_SIZE"))
 
     connection = psycopg2.connect(host=os.environ.get("PG_HOST"), user=os.environ.get("PG_USER"), password=os.environ.get("PG_PASSWORD"), dbname=os.environ.get("PG_DATABASE"))
     cursor = connection.cursor()
