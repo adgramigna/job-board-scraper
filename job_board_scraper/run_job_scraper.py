@@ -29,7 +29,7 @@ def run_spider(single_url_chunk, chunk_number):
     process.start()
 
 if __name__ == '__main__':
-    chunk_size = int(os.environ.get("CHUNK_SIZE"))
+    chunk_size = 16
 
     connection = psycopg2.connect(host=os.environ.get("PG_HOST"), user=os.environ.get("PG_USER"), password=os.environ.get("PG_PASSWORD"), dbname=os.environ.get("PG_DATABASE"))
     cursor = connection.cursor()
@@ -43,13 +43,11 @@ if __name__ == '__main__':
     processes = []
 
     for i, single_url_chunk in enumerate(url_chunks):
-        time.sleep(60)
+        time.sleep(30) #sleep to avoid issues exporting to Postgres
         p = multiprocessing.Process(target=run_spider, args=(single_url_chunk, i))
-        time.sleep(60)
         processes.append(p)
-        time.sleep(60)
         p.start()
 
     for p in processes:
-        time.sleep(60)
+        time.sleep(30) #sleep to avoid issues exporting to Postgres
         p.join()
