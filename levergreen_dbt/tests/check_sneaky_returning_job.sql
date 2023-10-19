@@ -1,4 +1,3 @@
-{{ config(severity = 'warn') }}
 --  June 2023
 -- This test will check for jobs with the same job_board_id that have dropped off and then returned.
 -- My model will not treat these as 1 day active, and instead will use the earliest active date to determine when the job was first acrtive
