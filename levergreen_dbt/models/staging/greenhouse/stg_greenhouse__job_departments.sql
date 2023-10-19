@@ -3,7 +3,7 @@ with greenhouse_departments_by_levergreen_id as (
         *,
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc,
-        cast(cast(existing_html_used as int) as boolean) as uses_existing_html, 
+        cast(existing_html_used as boolean) as uses_existing_html, 
         row_number() over(
             partition by levergreen_id
             order by

@@ -27,7 +27,7 @@ lever_outlines_by_levergreen_id as (
     select
         *,
         split_part(source,'.',2) as job_board,
-        cast(cast(existing_html_used as int) as boolean) as uses_existing_html, 
+        cast(existing_html_used as boolean) as uses_existing_html, 
         row_number() over(
             partition by opening_link, updated_date_utc
             order by
