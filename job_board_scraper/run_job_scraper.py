@@ -43,11 +43,11 @@ if __name__ == '__main__':
     processes = []
 
     for i, single_url_chunk in enumerate(url_chunks):
-        time.sleep(30) #sleep to avoid issues exporting to Postgres
+        time.sleep(60) #sleep to avoid issues exporting to Postgres
         p = multiprocessing.Process(target=run_spider, args=(single_url_chunk, i))
         processes.append(p)
         p.start()
 
     for p in processes:
-        time.sleep(30) #sleep to avoid issues exporting to Postgres
+        time.sleep(60) #sleep to avoid issues exporting to Postgres
         p.join()
