@@ -73,6 +73,11 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             return self.html_source.split("=")[-1]
         #Traditional format
         return self.html_source.split("/")[-1]
+    
+    @property
+    def existing_html_used(self):
+        #Initially set this to false, change later on in finalize_response if True
+        return False
 
     @property
     def full_s3_html_path(self):
@@ -113,6 +118,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     def finalize_response(self, response):
         if self.html_file != "":
             self.created_at = int(self.html_file["LastModified"].timestamp())
+            self.existing_html_used = True
             return self.html_file["Body"].read()
         else:
             self.export_html(response.text)
@@ -140,7 +146,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             il.add_value("company_name", self.company_name)
             il.add_value("run_hash", self.run_hash)
             il.add_value("raw_html_file_location", self.full_s3_html_path)
-            il.add_value("existing_html_used", self.created_at != self.updated_at)
+            il.add_value("existing_html_used", self.existing_html_used)
 
             yield il.load_item()
 
