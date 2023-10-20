@@ -32,6 +32,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         self.updated_at = int(self.current_time)
         self.created_at = int(self.current_time)
         self.current_date_utc = datetime.utcfromtimestamp(self.current_time).strftime("%Y-%m-%d")
+        self.existing_html_used = False #Initially set this to false, change later on in finalize_response if True
         self.logger.info(f"Initialized Spider, {self.html_source}")
 
     @property
@@ -73,11 +74,6 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             return self.html_source.split("=")[-1]
         #Traditional format
         return self.html_source.split("/")[-1]
-    
-    @property
-    def existing_html_used(self):
-        #Initially set this to false, change later on in finalize_response if True
-        return False
 
     @property
     def full_s3_html_path(self):
