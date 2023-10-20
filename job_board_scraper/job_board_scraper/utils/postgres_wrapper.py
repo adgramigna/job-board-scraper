@@ -1,6 +1,7 @@
 import os
 import psycopg2
 
+
 class PostgresWrapper:
     def __init__(self):
         ## Connection Details
@@ -11,9 +12,13 @@ class PostgresWrapper:
 
     def connection(self):
         ## Create/Connect to database
-        return psycopg2.connect(host=self.hostname, user=self.username, password=self.password, dbname=self.database)
+        return psycopg2.connect(
+            host=self.hostname,
+            user=self.username,
+            password=self.password,
+            dbname=self.database,
+        )
 
-
-    def cursor(self):  
+    def cursor(self):
         ## Create cursor, used to execute commands
         return self.connection().cursor()
