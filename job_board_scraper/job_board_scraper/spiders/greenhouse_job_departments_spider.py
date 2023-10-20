@@ -68,6 +68,10 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     
     @property
     def company_name(self):
+        #Different format for embedded html
+        if "=" in self.html_source:
+            return self.html_source.split("=")[-1]
+        #Traditional format
         return self.html_source.split("/")[-1]
 
     @property
