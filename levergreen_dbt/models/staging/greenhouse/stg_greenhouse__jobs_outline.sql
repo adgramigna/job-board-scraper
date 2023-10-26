@@ -1,24 +1,18 @@
 with convert_unix_to_ts as (
-    select
+    select 
         *,
-        split_part(source,'/',4) = 'embed' as is_embedded,
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc
-    from
-        {{ source(
+    from {{ source(
             'greenhouse',
             'greenhouse_jobs_outline'
         ) }}
-        {# where updated_at > 1684600000 #}
+    {# where updated_at > 1684600000 #}
 ),
+
 convert_ts_to_date as (
     select
         *,
-        split_part(
-            opening_link,
-            '/',
-            3
-        ) = 'embed' as is_embedded,
         date(created_at_utc) as created_date_utc,
         date(updated_at_utc) as updated_date_utc,
         row_number() over(
@@ -26,35 +20,26 @@ convert_ts_to_date as (
             order by
                 updated_at
         ) as earliest_levergreen_id_row
-    from
-        convert_unix_to_ts
+    from convert_unix_to_ts
 ),
+
 greenhouse_outlines_by_levergreen_id as (
     select
         *,
         split_part(source,'.',2) as job_board,
-        case 
-            when is_embedded then opening_link
-            else concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) \
-        end as full_opening_link,
+        concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) as full_opening_link,
         cast(existing_html_used as boolean) as uses_existing_html,
         row_number() over(
-            partition by opening_link,
-            updated_date_utc
+            partition by opening_link, updated_date_utc
             order by
                 updated_at
         ) as earliest_opening_link_row
-    from
-        convert_ts_to_date
-    where
-        earliest_levergreen_id_row = 1
+    from convert_ts_to_date
+    where earliest_levergreen_id_row = 1
 )
+
 select
-    concat(
-        job_board,
-        '_',
-        id
-    ) as id,
+    concat(job_board,'_',id) as id,
     levergreen_id,
     created_at_utc,
     updated_at_utc,
