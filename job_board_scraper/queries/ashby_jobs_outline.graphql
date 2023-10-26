@@ -1,0 +1,33 @@
+# Taken directly from an Ashby jobs page's network requests
+query ApiJobBoardWithTeams($organizationHostedJobsPageName: String!) {
+  jobBoard: jobBoardWithTeams(
+    organizationHostedJobsPageName: $organizationHostedJobsPageName
+  ) {
+    teams {
+      id
+      name
+      parentTeamId
+      __typename
+    }
+    jobPostings {
+      id
+      title
+      teamId
+      locationId
+      locationName
+      employmentType
+      secondaryLocations {
+        ...JobPostingSecondaryLocationParts
+        __typename
+      }
+      compensationTierSummary
+      __typename
+    }
+    __typename
+  }
+}
+fragment JobPostingSecondaryLocationParts on JobPostingSecondaryLocation {
+  locationId
+  locationName
+  __typename
+}
