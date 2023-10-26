@@ -3,7 +3,9 @@ with greenhouse_departments_by_levergreen_id as (
         *,
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc,
-        cast(existing_html_used as boolean) as uses_existing_html, 
+        cast(
+            existing_html_used as boolean
+        ) as uses_existing_html,
         row_number() over(
             partition by levergreen_id
             order by
@@ -14,7 +16,8 @@ with greenhouse_departments_by_levergreen_id as (
             'greenhouse',
             'greenhouse_job_departments'
         ) }}
-    where updated_at > 1684600000
+    where
+        updated_at > 1684600000
 )
 select
     id,
@@ -31,7 +34,11 @@ select
     department_id,
     department_category,
     department_name,
-    split_part(source,'.',2) as job_board
+    split_part(
+        source,
+        '.',
+        2
+    ) as job_board
 from
     greenhouse_departments_by_levergreen_id
 where
