@@ -6,3 +6,5 @@ pyarrow==11.0.0
 pandas==1.5.3
 psycopg2-binary==2.9.6
 dbt-postgres==1.6.0
+polars[sqlalchemy]==0.19.0
+duckdb==0.9.1
