@@ -2,6 +2,8 @@ with all_postings as (
     select * from {{ ref('int_greenhouse_departments_expanded_with_outline') }}
     union all
     select * from {{ ref('int_lever_departments_expanded') }}
+    union all
+    select * from {{ ref('int_ashby_outline_finalized') }}
 ),
 
 get_earliest_and_latest_dates as (
