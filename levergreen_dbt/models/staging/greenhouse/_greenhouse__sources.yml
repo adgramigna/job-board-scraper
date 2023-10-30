@@ -114,7 +114,7 @@ sources:
             - not_null
         - name: raw_html_file_location
           description: S3 bucket where the scraped data is stored
-        - name: uses_existing_html
+        - name: existing_html_used
           description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
         - name: run_hash
           description: Hashed value using hash ids to identify the id of a particular scraped

@@ -32,7 +32,7 @@ greenhouse_outlines_by_levergreen_id as (
             when is_embedded then opening_link
             else concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) 
         end as full_opening_link,
-        cast(existing_html_used as boolean) as uses_existing_html,
+        cast(existing_html_used as boolean) as uses_existing,
         row_number() over(
             partition by opening_link, updated_date_utc
             order by
@@ -50,7 +50,7 @@ select
     created_date_utc,
     updated_date_utc,
     source,
-    uses_existing_html,
+    uses_existing,
     raw_html_file_location,
     run_hash,
     department_ids,

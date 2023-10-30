@@ -3,7 +3,7 @@ with greenhouse_departments_by_levergreen_id as (
         *,
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc,
-        cast(existing_html_used as boolean) as uses_existing_html, 
+        cast(existing_html_used as boolean) as uses_existing, 
         row_number() over(
             partition by levergreen_id
             order by
@@ -24,7 +24,7 @@ select
     DATE(created_at_utc) as created_date_utc,
     DATE(updated_at_utc) as updated_date_utc,
     source,
-    uses_existing_html,
+    uses_existing,
     raw_html_file_location,
     run_hash,
     company_name,

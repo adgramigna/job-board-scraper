@@ -9,7 +9,7 @@ models:
       - dbt_expectations.expect_table_columns_to_match_set:
           column_list: ["id", "levergreen_id", "created_at_utc", "updated_at_utc",
            "source", "department_names", "location", "workplace_type",
-           "full_opening_link", "opening_title", "company_name", "uses_existing_html",
+           "full_opening_link", "opening_title", "company_name", "uses_existing",
            "raw_html_file_location", "run_hash", "created_date_utc", "updated_date_utc",
            "job_board"]
     columns:
@@ -41,7 +41,7 @@ models:
       description: Company name from Greenhouse. Taken by grabbing the end of the source.
     - name: raw_html_file_location
       description: S3 bucket where the scraped data is stored
-    - name: uses_existing_html
+    - name: uses_existing
       description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
     - name: run_hash
       description: Hashed value using hash ids to identify the id of a particular scraped

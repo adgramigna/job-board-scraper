@@ -13,7 +13,7 @@ models:
             "updated_date_utc",
             "source",
             "company_name",
-            "uses_existing_html",
+            "uses_existing",
             "location",
             "full_opening_link",
             "opening_title",
@@ -50,7 +50,7 @@ models:
         description: Greenhouse careers page source. 
       - name: company_name
         description: Company name from Greenhouse. Taken by grabbing the end of the source.
-      - name: uses_existing_html
+      - name: uses_existing
         description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
       - name: location
         description: Location where the job is posted. One or many.
@@ -72,7 +72,7 @@ models:
         description: Job board dervied from source
         tests:
           - accepted_values:
-              values: ['greenhouse', 'lever']
+              values: ['greenhouse', 'lever', 'ashby']
       - name: is_active
         description: >
           Boolean flag for whether the job is active. 
@@ -107,7 +107,7 @@ models:
           "updated_date_utc",
           "source",
           "company_name",
-          "uses_existing_html",
+          "uses_existing",
           "location",
           "full_opening_link",
           "opening_title",
@@ -144,7 +144,7 @@ models:
         description: Greenhouse careers page source. 
       - name: company_name
         description: Company name from Greenhouse. Taken by grabbing the end of the source.
-      - name: uses_existing_html
+      - name: uses_existing
         description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
       - name: location
         description: Location where the job is posted. One or many.
@@ -166,7 +166,7 @@ models:
         description: Job board dervied from source
         tests:
           - accepted_values:
-              values: ['greenhouse', 'lever']
+              values: ['greenhouse', 'lever', 'ashby']
       - name: is_active
         description: >
           Boolean flag for whether the job is active. 
@@ -200,7 +200,7 @@ models:
           "updated_date_utc",
           "source",
           "company_name",
-          "uses_existing_html",
+          "uses_existing",
           "location",
           "full_opening_link",
           "opening_title",
@@ -237,7 +237,7 @@ models:
         description: Greenhouse careers page source. 
       - name: company_name
         description: Company name from Greenhouse. Taken by grabbing the end of the source.
-      - name: uses_existing_html
+      - name: uses_existing
         description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
       - name: location
         description: Location where the job is posted. One or many.
@@ -294,7 +294,7 @@ models:
           "updated_date_utc",
           "source",
           "company_name",
-          "uses_existing_html",
+          "uses_existing",
           "location",
           "full_opening_link",
           "opening_title",
@@ -331,7 +331,7 @@ models:
         description: Greenhouse careers page source. 
       - name: company_name
         description: Company name from Greenhouse. Taken by grabbing the end of the source.
-      - name: uses_existing_html
+      - name: uses_existing
         description: Boolean indicating whether the HTML from the scrape was taken from the website or from the s3 bucket.
       - name: location
         description: Location where the job is posted. One or many.
