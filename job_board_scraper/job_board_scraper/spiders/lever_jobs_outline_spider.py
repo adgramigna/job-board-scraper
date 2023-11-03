@@ -37,31 +37,42 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
         # job_openings = selector.xpath('//a[@class="posting-title"]')
 
         for i, postings_group in enumerate(postings_groups):
-            # print(postings_groups)
             il = ItemLoader(
                 item=LeverJobsOutlineItem(),
                 selector=Selector(text=postings_group.get(), type="html"),
             )
             stratified_selector = Selector(text=postings_group.get(), type="html")
-            potential_departments = stratified_selector.xpath(
-                f"//div[contains(@class, 'large-category')]/text()"
+
+            potential_primary_department = stratified_selector.xpath(
+                f"//div[contains(@class, 'large-category-header')]/text()"
             )
-            departments = ""
-            for j, department in enumerate(potential_departments):
-                departments += f"{department.get()} - "
-                if j == len(potential_departments) - 1:
-                    departments = departments[:-3]  # Remove spaces and dash at end
+
+            label_department = stratified_selector.xpath(
+                f"//div[contains(@class, 'large-category-label')]/text()"
+            )
+
+            if i == 0:
+                if len(potential_primary_department) == 0:
+                    secondary_string = "label"
+                    primary_department = label_department.get()
+                else:
+                    secondary_string = "header"
+                    primary_department = potential_primary_department.get()
+            if secondary_string == "header":
+                if len(potential_primary_department) != 0:
+                    primary_department = potential_primary_department.get()
+                departments = primary_department + " – " + label_department.get()
+            else:
+                departments = label_department.get()
 
             job_openings = stratified_selector.xpath("//a[@class='posting-title']")
 
             # nested_openings = il.nested_xpath('//a[@class="posting-title"]')
-            for j, opening in job_openings:
+            for j, opening in enumerate(job_openings):
                 self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
                 nested = il.nested_xpath('//a[@class="posting-title"]')
 
-                il.add_xpath(
-                    "department_names", "//span[contains(@class, 'department')]/text()"
-                )
+                il.add_value("department_names", departments)
                 nested.add_xpath("opening_link", "@href")
                 il.add_xpath("opening_title", "//h5/text()")
                 il.add_xpath(
