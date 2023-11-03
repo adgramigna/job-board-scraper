@@ -32,34 +32,38 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
     def parse(self, response):
         response_html = self.finalize_response(response)
         selector = Selector(text=response_html, type="html")
+        postings_groups = selector.xpath('//div[@class="postings-group"][1]')
+        departments = selector.xpath("//div[contains(@class, 'large-category')]/text()")
         job_openings = selector.xpath('//a[@class="posting-title"]')
 
-        for i, opening in enumerate(job_openings):
+        for i, postings_group in enumerate(postings_groups):
             il = ItemLoader(
                 item=LeverJobsOutlineItem(),
-                selector=Selector(text=opening.get(), type="html"),
+                selector=Selector(text=postings_group.get(), type="html"),
             )
-            self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
-            nested = il.nested_xpath('//a[@class="posting-title"]')
+            nested_openings = il.nested_xpath('//a[@class="posting-title"]')
+            for j, opening in nested_openings:
+                self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
+                nested = il.nested_xpath('//a[@class="posting-title"]')
 
-            il.add_xpath(
-                "department_names", "//span[contains(@class, 'department')]/text()"
-            )
-            nested.add_xpath("opening_link", "@href")
-            il.add_xpath("opening_title", "//h5/text()")
-            il.add_xpath(
-                "workplace_type", "//span[contains(@class, 'workplaceType')]/text()"
-            )
-            il.add_xpath("location", "//span[contains(@class, 'location')]/text()")
+                il.add_xpath(
+                    "department_names", "//span[contains(@class, 'department')]/text()"
+                )
+                nested.add_xpath("opening_link", "@href")
+                il.add_xpath("opening_title", "//h5/text()")
+                il.add_xpath(
+                    "workplace_type", "//span[contains(@class, 'workplaceType')]/text()"
+                )
+                il.add_xpath("location", "//span[contains(@class, 'location')]/text()")
 
-            il.add_value("id", self.determine_row_id(i))
-            il.add_value("created_at", self.created_at)
-            il.add_value("updated_at", self.updated_at)
-            il.add_value("source", self.html_source)
-            il.add_value("company_name", self.company_name)
-            il.add_value("run_hash", self.run_hash)
-            il.add_value("raw_html_file_location", self.full_s3_html_path)
-            il.add_value("existing_html_used", self.existing_html_used)
+                il.add_value("id", self.determine_row_id(i))
+                il.add_value("created_at", self.created_at)
+                il.add_value("updated_at", self.updated_at)
+                il.add_value("source", self.html_source)
+                il.add_value("company_name", self.company_name)
+                il.add_value("run_hash", self.run_hash)
+                il.add_value("raw_html_file_location", self.full_s3_html_path)
+                il.add_value("existing_html_used", self.existing_html_used)
 
-            yield il.load_item()
+                yield il.load_item()
             # self.logger.info(f"{dep_xpath} Department here")
