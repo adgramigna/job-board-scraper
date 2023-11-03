@@ -32,17 +32,30 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
     def parse(self, response):
         response_html = self.finalize_response(response)
         selector = Selector(text=response_html, type="html")
-        postings_groups = selector.xpath('//div[@class="postings-group"][1]')
-        departments = selector.xpath("//div[contains(@class, 'large-category')]/text()")
-        job_openings = selector.xpath('//a[@class="posting-title"]')
+        postings_groups = selector.xpath('//div[@class="postings-group"]')
+        # departments = selector.xpath("//div[contains(@class, 'large-category')]/text()")
+        # job_openings = selector.xpath('//a[@class="posting-title"]')
 
         for i, postings_group in enumerate(postings_groups):
+            # print(postings_groups)
             il = ItemLoader(
                 item=LeverJobsOutlineItem(),
                 selector=Selector(text=postings_group.get(), type="html"),
             )
-            nested_openings = il.nested_xpath('//a[@class="posting-title"]')
-            for j, opening in nested_openings:
+            stratified_selector = Selector(text=postings_group.get(), type="html")
+            potential_departments = stratified_selector.xpath(
+                f"//div[contains(@class, 'large-category')]/text()"
+            )
+            departments = ""
+            for j, department in enumerate(potential_departments):
+                departments += f"{department.get()} - "
+                if j == len(potential_departments) - 1:
+                    departments = departments[:-3]  # Remove spaces and dash at end
+
+            job_openings = stratified_selector.xpath("//a[@class='posting-title']")
+
+            # nested_openings = il.nested_xpath('//a[@class="posting-title"]')
+            for j, opening in job_openings:
                 self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
                 nested = il.nested_xpath('//a[@class="posting-title"]')
 
@@ -56,7 +69,7 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
                 )
                 il.add_xpath("location", "//span[contains(@class, 'location')]/text()")
 
-                il.add_value("id", self.determine_row_id(i))
+                il.add_value("id", self.determine_row_id(i * 1000 + j))
                 il.add_value("created_at", self.created_at)
                 il.add_value("updated_at", self.updated_at)
                 il.add_value("source", self.html_source)
