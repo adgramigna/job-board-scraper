@@ -12,6 +12,10 @@ def get_last_word(class_name):
     return class_name.split()[-1]
 
 
+def get_first_word(text):
+    return text.split()[0]
+
+
 class LevergreenScrapyItem(scrapy.Item):
     id = scrapy.Field(output_processor=TakeFirst())
     created_at = scrapy.Field(output_processor=TakeFirst())
@@ -34,7 +38,9 @@ class GreenhouseJobsOutlineItem(LevergreenScrapyItem):
 class LeverJobsOutlineItem(LevergreenScrapyItem):
     # define the fields for your item here like:
     department_names = scrapy.Field(output_processor=TakeFirst())
-    workplace_type = scrapy.Field(output_processor=TakeFirst())
+    workplace_type = scrapy.Field(
+        input_processor=MapCompose(get_first_word), output_processor=TakeFirst()
+    )
     opening_title = scrapy.Field(output_processor=TakeFirst())
     opening_link = scrapy.Field(output_processor=TakeFirst())
     location = scrapy.Field(output_processor=TakeFirst())
