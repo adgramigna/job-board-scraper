@@ -2,7 +2,7 @@ levergreen_dbt:
   outputs:
     dev:
       type: postgres
-      threads: 1
+      threads: 4
       host:  "{{ env_var('PG_HOST') }}"
       port: 5432
       user: "{{ env_var('PG_USER') }}"
@@ -12,7 +12,7 @@ levergreen_dbt:
 
     prod:
       type: postgres
-      threads: 1
+      threads: 4
       host:  "{{ env_var('PG_HOST') }}"
       port: 5432
       user: "{{ env_var('PG_USER') }}"
