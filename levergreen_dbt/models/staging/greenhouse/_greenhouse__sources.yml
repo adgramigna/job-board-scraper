@@ -95,7 +95,7 @@ sources:
             - not_null:
                 config:  
                   severity: error
-                  where: "opening_title != 'Don''t see the right opportunity? Apply here!' and opening_title != 'General Application' and opening_link != 'https://boards.greenhouse.io/atbayjobs/jobs/5792164003'" #Exclude generic applications
+                  where: "opening_title != 'Don''t see the right opportunity? Apply here!' and opening_title != 'General Application' and opening_link != '/atbayjobs/jobs/5792164003'" #Exclude generic applications
         - name: office_ids
           description: Comma separated list of of office_ids. Sometimes null in the source data, not sure why
         - name: location
