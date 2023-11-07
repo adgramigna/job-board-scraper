@@ -37,10 +37,6 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
         # job_openings = selector.xpath('//a[@class="posting-title"]')
 
         for i, postings_group in enumerate(postings_groups):
-            il = ItemLoader(
-                item=LeverJobsOutlineItem(),
-                selector=Selector(text=postings_group.get(), type="html"),
-            )
             stratified_selector = Selector(text=postings_group.get(), type="html")
 
             potential_primary_department = stratified_selector.xpath(
@@ -67,13 +63,18 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
 
             job_openings = stratified_selector.xpath("//a[@class='posting-title']")
 
-            # nested_openings = il.nested_xpath('//a[@class="posting-title"]')
             for j, opening in enumerate(job_openings):
+                il = ItemLoader(
+                    item=LeverJobsOutlineItem(),
+                    selector=Selector(text=opening.get(), type="html"),
+                )
+                # print(opening.get())
                 self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
-                nested = il.nested_xpath('//a[@class="posting-title"]')
+                # nested = il.nested_xpath('//a[@class="posting-title"]')
 
                 il.add_value("department_names", departments)
-                nested.add_xpath("opening_link", "@href")
+                il.add_xpath("opening_link", '//a[@class="posting-title"]/@href')
+                # nested.add_xpath("opening_link", "@href")
                 il.add_xpath("opening_title", "//h5/text()")
                 il.add_xpath(
                     "workplace_type", "//span[contains(@class, 'workplaceType')]/text()"
