@@ -1,4 +1,4 @@
-{{ config(enabled=false, severity = 'warn') }}
+{{ config(enabled=true, severity = 'error') }}
 --disable when all companies have has jobs
 
 -- here we are checking if the scraper did correctly scrape jobs for each careers_page
@@ -8,7 +8,7 @@ with expected_sources as (
     select distinct url as expected_source
     from {{ source('levergreen', 'job_board_urls') }}
     where is_enabled
-    and url != 'https://boards.greenhouse.io/supabase'
+    and url != 'https://boards.greenhouse.io/embed/job_board?for=openspace'
 ),
 
 actual_sources as (
