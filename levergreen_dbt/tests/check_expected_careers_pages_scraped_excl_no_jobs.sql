@@ -1,4 +1,4 @@
-{{ config(enabled=true, severity = 'error') }}
+{{ config(enabled=false, severity = 'error') }}
 --disable when all companies have has jobs
 
 -- here we are checking if the scraper did correctly scrape jobs for each careers_page
