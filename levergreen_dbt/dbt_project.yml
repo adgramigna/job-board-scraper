@@ -35,7 +35,7 @@ models:
     staging:
       +materialized: view
     intermediate:
-      +materialized: ephemeral
+      +materialized: table
     marts:
       +materialized: table
       +schema: core
