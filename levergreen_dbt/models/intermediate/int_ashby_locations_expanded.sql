@@ -7,8 +7,8 @@ jobs_outline as (
 ),
 
 all_secondary_locations as (
-    select opening_id, string_agg(secondary_location_name, ', ') as secondary_locations from job_locations
-    group by 1
+    select opening_id, run_hash, string_agg(secondary_location_name, ', ') as secondary_locations from job_locations
+    group by 1,2
 )
 
 select
@@ -21,3 +21,4 @@ select
     end as location
 from jobs_outline
 left join all_secondary_locations on jobs_outline.opening_id = all_secondary_locations.opening_id
+and jobs_outline.run_hash = all_secondary_locations.run_hash
