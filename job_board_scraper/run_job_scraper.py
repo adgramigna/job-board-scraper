@@ -32,14 +32,14 @@ def run_spider(single_url_chunk, chunk_number):
                 careers_page_url=careers_page_url,
                 use_existing_html=True,
                 run_hash=run_hash,
-                url_id=chunk_number * i + i,
+                url_id=chunk_number * len(single_url_chunk) + i,
             )
             process.crawl(
                 GreenhouseJobsOutlineSpider,
                 careers_page_url=careers_page_url,
                 use_existing_html=True,
                 run_hash=run_hash,
-                url_id=chunk_number * i + i,
+                url_id=chunk_number * len(single_url_chunk) + i,
             )
         elif careers_page_url.split(".")[1] == "lever":
             process.crawl(
@@ -47,7 +47,7 @@ def run_spider(single_url_chunk, chunk_number):
                 careers_page_url=careers_page_url,
                 use_existing_html=True,
                 run_hash=run_hash,
-                url_id=chunk_number * i + i,
+                url_id=chunk_number * len(single_url_chunk) + i,
             )
     process.start()
 
