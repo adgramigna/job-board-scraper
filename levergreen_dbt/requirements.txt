@@ -1,0 +1,2 @@
+dbt-postgres==1.7.2
+elementary-data==0.12.0
