@@ -5,3 +5,6 @@ logs/
 
 #generated from dbt docs generate
 .user.yml
+
+#generated from dbt deps
+package-lock.yml
