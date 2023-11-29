@@ -8,3 +8,6 @@ logs/
 
 #generated from dbt deps
 package-lock.yml
+
+#generated from elementary data observability
+edr_target
