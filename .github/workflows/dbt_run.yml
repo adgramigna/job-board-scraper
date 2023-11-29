@@ -64,6 +64,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
         with:
           warehouse-type: postgres
+          profiles-yml: ${{ secrets.ELEMENTARY_PROFILES_YML }}
           edr-command:
             cd levergreen_dbt && edr send-report
               --aws-access-key-id "${{ secrets.AWS_ACCESS_KEY_ID }}"
