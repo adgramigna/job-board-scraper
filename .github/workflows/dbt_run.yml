@@ -45,7 +45,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
       
       - name: Check Freshness of dbt models
-        if: always() && steps.run_dbt.conclusion == 'success'
+        if: ${{ always() && steps.run_dbt.conclusion == 'success'}}
         run: cd levergreen_dbt && dbt source freshness
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
@@ -54,7 +54,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
 
       - name: Run Elementary
-        if: always() && steps.run_dbt.conclusion == 'success'
+        if: ${{ always() && steps.run_dbt.conclusion == 'success'}}
         uses: elementary-data/run-elementary-action@v1.11
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
