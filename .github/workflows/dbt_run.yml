@@ -13,10 +13,7 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - name: Checkout dbt repo
-        uses: actions/checkout@v3
-        with:
-          path: levergreen_dbt
+      - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -26,9 +23,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          ls
           pip install -r requirements.txt
-    
+
+      - name: Checkout dbt repo
+        uses: actions/checkout@v3
+        with:
+          path: levergreen_dbt
+
       - name: Install dbt dependencies
         run: dbt deps
 
