@@ -14,7 +14,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-
+        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -24,18 +24,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Checkout dbt repo
-        uses: actions/checkout@v3
-        with:
-          path: levergreen_dbt
-
+    
       - name: Install dbt dependencies
-        run: dbt deps
+        run: cd levergreen_dbt && dbt deps
 
       - name: Run dbt models
         id: run_dbt_step
-        run: dbt run
+        run: cd levergreen_dbt && dbt run
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
           PG_HOST: ${{ secrets.PG_HOST }}
@@ -43,7 +38,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
 
       - name: Test dbt models
-        run: dbt test
+        run: cd levergreen_dbt && dbt test
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
           PG_HOST: ${{ secrets.PG_HOST }}
@@ -52,7 +47,7 @@ jobs:
       
       - name: Check Freshness of dbt models
         if: ${{ always() && steps.run_dbt_step.conclusion == 'success'}}
-        run: dbt source freshness
+        run: cd levergreen_dbt && dbt source freshness
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
           PG_HOST: ${{ secrets.PG_HOST }}
@@ -70,7 +65,7 @@ jobs:
         with:
           warehouse-type: postgres
           edr-command:
-            edr send-report
+            cd levergreen_dbt && edr send-report
               --aws-access-key-id "${{ secrets.AWS_ACCESS_KEY_ID }}"
               --aws-secret-access-key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
               --s3-bucket-name "${{ secrets.ELEMENTARY_S3_BUCKET }}"
