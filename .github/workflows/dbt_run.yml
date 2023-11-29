@@ -28,6 +28,7 @@ jobs:
         run: cd levergreen_dbt && dbt deps
 
       - name: Run dbt models
+        id: run_dbt
         run: cd levergreen_dbt && dbt run
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
@@ -44,6 +45,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
       
       - name: Check Freshness of dbt models
+        if: steps.run_dbt.outcome == 'success'
         run: cd levergreen_dbt && dbt source freshness
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
@@ -52,6 +54,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
 
       - name: Run Elementary
+        if: steps.run_dbt.outcome == 'success'
         uses: elementary-data/run-elementary-action@v1.11
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
