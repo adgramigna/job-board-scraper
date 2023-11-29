@@ -21,3 +21,15 @@ levergreen_dbt:
       schema: public
 
   target: prod
+
+elementary:
+  outputs:
+    default:
+      type: "postgres"
+      host:  "{{ env_var('PG_HOST') }}"
+      port: 5432
+      user: "{{ env_var('PG_USER') }}"
+      pass: "{{ env_var('PG_PASSWORD') }}"
+      dbname: "{{ env_var('PG_DATABASE') }}"
+      schema: "elementary"
+      threads: 4

@@ -51,3 +51,18 @@ jobs:
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
 
+      - name: Run Elementary
+        uses: elementary-data/run-elementary-action@v1.11
+        env:
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
+        with:
+          edr-command:
+            edr send-report
+              --aws-access-key-id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+              --aws-secret-access-key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+              --s3-bucket-name "${{ secrets.ELEMENTARY_S3_BUCKET }}"
+              --update-bucket-website "true"
+
