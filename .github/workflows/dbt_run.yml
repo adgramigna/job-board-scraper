@@ -71,4 +71,5 @@ jobs:
               --aws-secret-access-key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
               --s3-bucket-name "${{ secrets.ELEMENTARY_S3_BUCKET }}"
               --update-bucket-website "true"
+              --env "prod"
 
