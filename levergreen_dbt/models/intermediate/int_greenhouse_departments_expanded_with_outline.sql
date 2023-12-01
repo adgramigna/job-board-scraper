@@ -21,6 +21,7 @@ jobs_outline_unnested as (
         greenhouse_jobs_outline.full_opening_link, 
         greenhouse_jobs_outline.opening_title,
         greenhouse_jobs_outline.job_board,
+        greenhouse_jobs_outline.company_name,
         lower(greenhouse_jobs_outline.location) like '%remote%' as is_remote,
         department_ids_unnested.department_id
     from greenhouse_jobs_outline, unnest(string_to_array(department_ids, ',')) as department_ids_unnested(department_id)
@@ -29,8 +30,9 @@ jobs_outline_unnested as (
 outline_joined_to_depts as (
     select 
         jobs_outline_unnested.*,
-        greenhouse_job_departments.company_name,
-        case when greenhouse_job_departments.department_category = 'level-0' then greenhouse_job_departments.department_name end as primary_department,
+        case 
+            when greenhouse_job_departments.department_category = 'level-0' then greenhouse_job_departments.department_name 
+            when jobs_outline_unnested.department_id = 'No Dept' then 'No Department' end as primary_department,
         case when greenhouse_job_departments.department_category = 'level-1' then greenhouse_job_departments.department_name end as secondary_department,
         case when greenhouse_job_departments.department_category = 'level-2' then greenhouse_job_departments.department_name end as tertiary_department,
         case when greenhouse_job_departments.department_category = 'level-3' then greenhouse_job_departments.department_name end as quaternary_department
