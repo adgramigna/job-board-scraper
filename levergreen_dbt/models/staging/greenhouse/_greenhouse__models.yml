@@ -57,7 +57,7 @@ models:
            "created_date_utc", "updated_date_utc",
             "source", "department_ids", "location", "office_ids",
             "full_opening_link", "opening_title", "uses_existing",
-            "raw_html_file_location", "run_hash", "job_board"]
+            "raw_html_file_location", "run_hash", "job_board", 'company_name']
     columns:
       - name: id
         description: serial id created by postgres upon insertion
@@ -81,6 +81,8 @@ models:
         description: Comma separated list of locations
       - name: full_opening_link
         description: Source of the actual job posting. Scraped value is only the suffix of the link, here we clean to have the full link.
+      - name: company_name
+        description: Company name from Greenhouse. Taken by grabbing the end of the source.
       - name: opening_title
         description: Name of the role
       - name: raw_html_file_location
