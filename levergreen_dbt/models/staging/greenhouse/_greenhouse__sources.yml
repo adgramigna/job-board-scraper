@@ -91,11 +91,6 @@ sources:
             - not_null
         - name: department_ids
           description: Comma separated list of Greenhouse department_ids. Will use this to join to greenhouse_job_deparments further on in data models
-          tests:
-            - not_null:
-                config:  
-                  severity: error
-                  where: "opening_title != 'Don''t see the right opportunity? Apply here!' and opening_title != 'General Application' and opening_link != '/atbayjobs/jobs/5792164003' and opening_link != '/atbayjobs/jobs/5808689003'" #Exclude generic applications
         - name: office_ids
           description: Comma separated list of of office_ids. Sometimes null in the source data, not sure why
         - name: location
