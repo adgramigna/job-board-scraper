@@ -13,7 +13,6 @@ with unique_active_jobs_per_company as (
 sources as (
     select run_hash, source, 'greenhouse' as job_board, count(*) as num_source_openings 
     from {{ source('greenhouse', 'greenhouse_jobs_outline') }}
-    where department_ids is not null --excludes a couple broken links from source (General Applications)
     group by 1,2,3
     union all
     select run_hash, source, 'lever' as job_board, count(*) as num_source_openings 
