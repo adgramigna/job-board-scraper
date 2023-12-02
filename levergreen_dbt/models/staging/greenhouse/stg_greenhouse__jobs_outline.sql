@@ -32,6 +32,10 @@ greenhouse_outlines_by_levergreen_id as (
             when is_embedded then opening_link
             else concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) 
         end as full_opening_link,
+        case
+            when is_embedded then split_part(source,'=',-1)
+            else split_part(source,'/',-1)
+        end as company_name,
         cast(existing_html_used as boolean) as uses_existing,
         row_number() over(
             partition by opening_link, updated_date_utc
@@ -53,7 +57,8 @@ select
     uses_existing,
     raw_html_file_location,
     run_hash,
-    department_ids,
+    company_name,
+    coalesce(department_ids, 'No Dept') as department_ids,
     location,
     office_ids,
     full_opening_link,
