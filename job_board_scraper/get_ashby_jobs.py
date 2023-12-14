@@ -140,11 +140,11 @@ f = open("queries/ashby_jobs_outline.graphql")
 query = f.read()
 
 headers = {"Content-Type": "application/json"}
-# careers_page_urls = [("https://jobs.ashbyhq.com/deel",)]
 for i, url in enumerate(careers_page_urls):
     ashby_url = url[0]  # UnTuple-ify
-    ashby_company = ashby_url.split("/")[-1]
-    # ashby_company = '5'
+    ashby_company = ashby_url.split("/")[-1].replace(
+        "%20", " "
+    )  # For The Browser Company
 
     variables = {"organizationHostedJobsPageName": ashby_company}
 
@@ -178,7 +178,7 @@ for i, url in enumerate(careers_page_urls):
             json.dumps(response_json["data"]["jobBoard"]["jobPostings"]),
             type=list[Posting],
         )
-    except TypeError as te:
+    except TypeError:
         logger.error(
             f"An error occurred for company '{ashby_company}'. Perhaps you have the wrong Ashby company name"
         )
@@ -273,7 +273,7 @@ for i, url in enumerate(careers_page_urls):
         team_data = decode(
             json.dumps(response_json["data"]["jobBoard"]["teams"]), type=list[Team]
         )
-    except TypeError as te:
+    except TypeError:
         logger.error(
             f"An error occurred for company '{ashby_company}'. Perhaps you have the wrong Ashby company name"
         )
