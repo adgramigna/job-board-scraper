@@ -145,6 +145,7 @@ for i, url in enumerate(careers_page_urls):
     ashby_company = ashby_url.split("/")[-1].replace(
         "%20", " "
     )  # For The Browser Company
+    ashby_company_for_source = ashby_url.split("/")[-1]
 
     variables = {"organizationHostedJobsPageName": ashby_company}
 
@@ -157,7 +158,7 @@ for i, url in enumerate(careers_page_urls):
     full_s3_json_path = (
         "s3://" + os.environ.get("RAW_HTML_S3_BUCKET") + "/" + s3_json_path
     )
-    ashby_job_board_source = f"https://jobs.ashbyhq.com/{ashby_company}"
+    ashby_job_board_source = f"https://jobs.ashbyhq.com/{ashby_company_for_source}"
 
     response = requests.request(
         "POST",
