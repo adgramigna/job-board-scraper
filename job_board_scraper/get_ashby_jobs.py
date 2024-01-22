@@ -169,8 +169,9 @@ for i, url in enumerate(careers_page_urls):
 
     response_text = response.text
     response_json = json.loads(response_text)
-    if response_json["data"]["jobBoard"] == None:
+    if response_json["data"]["jobBoard"] is None:
         logger.error(f"No data for {ashby_company}")
+        continue
     else:
         logger.info(f"Got data for {ashby_company}")
 
@@ -183,6 +184,7 @@ for i, url in enumerate(careers_page_urls):
         logger.error(
             f"An error occurred for company '{ashby_company}'. Perhaps you have the wrong Ashby company name"
         )
+        continue
 
     # secondaryLocations list
     all_postings_json = []
@@ -278,6 +280,7 @@ for i, url in enumerate(careers_page_urls):
         logger.error(
             f"An error occurred for company '{ashby_company}'. Perhaps you have the wrong Ashby company name"
         )
+        continue
 
     all_teams_json = []
     for j, record in enumerate(team_data):
