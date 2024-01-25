@@ -57,9 +57,7 @@ sources:
         - name: location
           description: Single location where the job is posted. Seems more rigid than Greenhouse on first glance, only one posting.
           tests:
-            - not_null:
-                config:  
-                  severity: warn
+            - not_null
         - name: opening_link
           description: Source of the actual job posting
           tests:
