@@ -40,9 +40,37 @@ jobs:
           CHUNK_SIZE: ${{ secrets.CHUNK_SIZE }}
           RAW_HTML_S3_BUCKET: ${{ secrets.RAW_HTML_S3_BUCKET }}
 
+  run_rippling_script:
+    name: Call Rippling Script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Rippling Script
+        run: |
+          cd job_board_scraper
+          python get_rippling_jobs.py rippling
+        env:
+          HASHIDS_SALT: ${{ secrets.HASHIDS_SALT }}
+          PG_DATABASE: ${{ secrets.PG_DATABASE }}
+          PG_HOST: ${{ secrets.PG_HOST }}
+          PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          PG_USER: ${{ secrets.PG_USER }}
+          GET_BOARD_TOKENS_BASE_QUERY: ${{ GET_BOARD_TOKENS_BASE_QUERY }}
+          RIPPLING_JOBS_OUTLINE_TABLE_NAME: ${{ RIPPLING_JOBS_OUTLINE_TABLE_NAME }}
+
   run_dbt:
     name: Run dbt
-    needs: run_script
+    needs: [run_script, run_rippling_script]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
