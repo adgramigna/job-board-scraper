@@ -24,23 +24,8 @@ def export_table_to_postgres(df, table_name):
 
 
 def determine_table_names(job_board_provider):
-    if job_board_provider == "greenhouse":
-        return [
-            os.environ.get("GREENHOUSE_JOBS_OUTLINE_TABLE_NAME"),
-            os.environ.get("GREENHOUSE_JOBS_DETAIL_TABLE_NAME"),
-            os.environ.get("GREENHOUSE_JOB_DEPARTMENTS_TABLE_NAME"),
-        ]
-    if job_board_provider == "lever":
-        return [
-            os.environ.get("LEVER_JOBS_OUTLINE_TABLE_NAME"),
-            os.environ.get("LEVER_JOB_DESCRIPTION_SECTIONS_TABLE_NAME"),
-            os.environ.get("LEVER_JOB_LOCATIONS_TABLE_NAME"),
-        ]
-    if job_board_provider == "ashby":
-        return [
-            os.environ.get("ASHBY_JOBS_OUTLINE_TABLE_NAME"),
-            os.environ.get("ASHBY_JOB_LOCATIONS_TABLE_NAME"),
-        ]
+    if job_board_provider == "rippling":
+        return [os.environ.get("RIPPLING_JOBS_OUTLINE_TABLE_NAME")]
 
 
 def export_dataframes_to_postgres(table_pairs_dict):

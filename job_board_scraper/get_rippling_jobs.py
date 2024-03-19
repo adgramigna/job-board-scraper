@@ -17,7 +17,6 @@ run_hash = general_util.hash_ids.encode(int(start))
 
 board_tokens = general_util.setup_postgres_connection(job_board_provider)
 for board_token in board_tokens:
-
     logger.info(f"{board_token}, {time.time() - start}")
     start = time.time()
 

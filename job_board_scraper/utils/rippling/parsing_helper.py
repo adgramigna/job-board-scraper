@@ -47,22 +47,6 @@ def parse_jobs_outline_json(data, board_token, run_hash, source="local"):
         job_outline_json_record["department"] = job_outline.department.label
         job_outline_json_record["location"] = job_outline.workLocation.label
         job_outline_json_record["url"] = job_outline.url
-
-        # try:
-        #     job_outline_json_record["address_region"] = (
-        #         job_outline.address.postalAddress.addressRegion
-        #     )
-        #     job_outline_json_record["address_country"] = (
-        #         job_outline.address.postalAddress.addressCountry
-        #     )
-        #     job_outline_json_record["address_locality"] = (
-        #         job_outline.address.postalAddress.addressLocality
-        #     )
-        # except AttributeError:
-        #     job_outline_json_record["address_region"] = None
-        #     job_outline_json_record["address_country"] = None
-        #     job_outline_json_record["address_locality"] = None
-
         job_outline_json_record["board_token"] = board_token
         job_outline_json_record["run_hash"] = run_hash
         job_outline_json_record["api_endpoint"] = source

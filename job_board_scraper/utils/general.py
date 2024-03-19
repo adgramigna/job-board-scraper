@@ -2,13 +2,6 @@ from hashids import Hashids
 import os
 import psycopg2
 import logging
-
-# from utils.greenhouse.parsing_helper import (
-#     call_greenhouse_job_board_api,
-#     create_greenhouse_dataframes,
-# )
-# from utils.lever.parsing_helper import call_lever_job_board_api, create_lever_dataframes
-# from utils.ashby.parsing_helper import call_ashby_job_board_api, create_ashby_dataframes
 from utils.rippling.parsing_helper import (
     call_rippling_job_board_api,
     create_rippling_dataframes,
