@@ -31,7 +31,7 @@ def create_rippling_dataframes(jobs_outline_json, board_token, run_hash, source)
 
     job_outline_df = (
         pl.DataFrame(all_job_outlines_json)
-        .groupby(["job_id", "title", "department", "url"])
+        .groupby([key for key in all_job_outlines_json[0].keys() if key != "location"])
         .agg(pl.col("location").str.concat(", "))
     )
 
