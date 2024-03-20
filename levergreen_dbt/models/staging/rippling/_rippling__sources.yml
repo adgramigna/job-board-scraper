@@ -1,0 +1,63 @@
+version: 2
+
+sources:
+  - name: rippling
+    description: >
+      Data from careers pages of companies who use Rippling. Called from external Python script and cleaned slightly.
+    schema: public
+    loader: API script (get_rippling_jobs.py)
+    loaded_at_field: created_at
+    freshness:
+      warn_after: {count: 1, period: day}
+      error_after: {count: 2, period: day}
+
+    tables:
+      - name: rippling_jobs_outline
+        description: >
+          Contains job department information from greenhouse. To be joined with greenhouse_jobs_outline
+        tests:
+          - dbt_expectations.expect_table_columns_to_match_set:
+              column_list: ["id", "job_id", "created_at", "title", "url", "location",
+              "board_token", "department",  "run_hash", "api_endpoint"]
+        columns:
+          - name: id
+            description: serial id created by postgres upon insertion
+            tests:
+              - unique
+              - not_null
+          - name: created_at
+            description: Timestamp of when the greenhouse site was scraped, in UTC time. If we used existing HTML, this field is not updated.
+            tests:
+              - not_null
+          - name: department
+            description: Name of the Greenhouse Department
+            tests:
+              - not_null
+          - name: board_token
+            description: Company name from Greenhouse. Taken by grabbing the end of the source.
+            tests:
+              - not_null
+          - name: run_hash
+            description: Hashed value using hash ids to identify the id of a particular scraped
+            tests:
+              - not_null
+          - name: api_endpoint
+            description: API endpoint from Rippling
+            tests:
+              - not_null
+          - name: job_id
+            description: API endpoint from Rippling
+            tests:
+              - not_null
+          - name: title
+            description: Job title
+            tests:
+              - not_null
+          - name: url
+            description: Opening Link
+            tests:
+              - not_null
+          - name: location
+            description: Job Location
+            tests:
+              - not_null
