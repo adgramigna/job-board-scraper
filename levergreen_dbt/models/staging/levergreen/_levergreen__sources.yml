@@ -11,7 +11,8 @@ sources:
         description: List of all the careers page urls to scrape.
         tests:
           - dbt_expectations.expect_table_columns_to_match_set:
-              column_list: ["id", "url", "is_enabled", "is_prospect", "is_web_scraped"]
+              column_list: ["id", "url", "is_enabled", "is_prospect", "is_web_scraped",
+              "job_board_provider", "board_token"]
         columns:
         - name: id
           description: serial id created by postgres upon insertion
@@ -25,3 +26,11 @@ sources:
             - not_null
         - name: is_enabled
           description: boolean flag determining whether we are scraping this url in our daily runs
+        - name: is_prospect
+          description: boolean flag determining whether or not the company is a Prospect company
+        - name: is_web_scraped
+          description: True if using the scrapy script, otherwise false?
+        - name: job_board_provider
+          description: Company is providing the job_board
+        - name: board_token
+          description: Company of the jobs listed

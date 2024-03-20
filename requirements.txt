@@ -12,3 +12,4 @@ duckdb==0.9.1
 msgspec==0.18.4
 ipykernel==6.29.2
 connectorx==0.3.2
+adbc-driver-postgresql==0.10.0
