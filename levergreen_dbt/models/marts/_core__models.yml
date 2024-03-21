@@ -72,7 +72,7 @@ models:
         description: Job board dervied from source
         tests:
           - accepted_values:
-              values: ['greenhouse', 'lever', 'ashby']
+              values: ['greenhouse', 'lever', 'ashby', 'rippling']
       - name: is_active
         description: >
           Boolean flag for whether the job is active. 
