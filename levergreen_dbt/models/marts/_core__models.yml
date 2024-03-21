@@ -41,7 +41,8 @@ models:
         description: Id from Levergreen scraper. Unique relative to the HTML file used.
         tests:
           - not_null 
-          - unique
+          - unique:
+              where: "job_board != 'rippling'"
       - name: created_date_utc
         description: Timestamp of when the greenhouse site was scraped, casted to UTC, timezone shown. If we used existing HTML, this field is not updated.
       - name: created_date_utc
@@ -166,7 +167,7 @@ models:
         description: Job board dervied from source
         tests:
           - accepted_values:
-              values: ['greenhouse', 'lever', 'ashby']
+              values: ['greenhouse', 'lever', 'ashby', 'rippling']
       - name: is_active
         description: >
           Boolean flag for whether the job is active. 
