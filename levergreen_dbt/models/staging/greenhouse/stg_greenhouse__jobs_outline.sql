@@ -1,7 +1,8 @@
 with convert_unix_to_ts as (
     select 
         *,
-        split_part(source, '/', 4) = 'embed' as is_embedded, 
+        split_part(source, '/', 4) = 'embed'
+            or split_part(split_part(source,'/',3),'.',1) = 'job-boards' as is_full_link, 
         to_timestamp(created_at) at time zone 'UTC' as created_at_utc,
         to_timestamp(updated_at) at time zone 'UTC' as updated_at_utc
     from {{ source(
@@ -29,11 +30,11 @@ greenhouse_outlines_by_levergreen_id as (
         *,
         split_part(source,'.',2) as job_board,
         case 
-            when is_embedded then opening_link
+            when is_full_link then opening_link
             else concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) 
         end as full_opening_link,
         case
-            when is_embedded then split_part(source,'=',-1)
+            when is_full_link then split_part(source,'=',-1)
             else split_part(source,'/',-1)
         end as company_name,
         cast(existing_html_used as boolean) as uses_existing,
