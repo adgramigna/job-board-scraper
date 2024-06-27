@@ -34,7 +34,7 @@ greenhouse_outlines_by_levergreen_id as (
             else concat(source,'/',split_part(opening_link,'/',3),'/',split_part(opening_link,'/',4)) 
         end as full_opening_link,
         case
-            when is_full_link then split_part(source,'=',-1)
+            when is_full_link and split_part(source, '/', 4) = 'embed' then split_part(source,'=',-1)
             else split_part(source,'/',-1)
         end as company_name,
         cast(existing_html_used as boolean) as uses_existing,
