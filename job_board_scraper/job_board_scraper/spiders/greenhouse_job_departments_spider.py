@@ -18,7 +18,7 @@ load_dotenv()
 
 class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     name = "greenhouse_job_departments"
-    allowed_domains = ["boards.greenhouse.io"]
+    allowed_domains = ["boards.greenhouse.io", "job-boards.greenhouse.io"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,6 +34,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         )
         self.settings = get_project_settings()
         self.current_time = time.time()
+        self.page_number = 1  # default
         self.updated_at = int(self.current_time)
         self.created_at = int(self.current_time)
         self.current_date_utc = datetime.utcfromtimestamp(self.current_time).strftime(
@@ -77,10 +78,10 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     @property
     def company_name(self):
         # Different format for embedded html
-        if "=" in self.html_source:
-            return self.html_source.split("=")[-1]
+        if "for=" in self.html_source:
+            return self.html_source.split("for=")[-1]
         # Traditional format
-        return self.html_source.split("/")[-1]
+        return self.html_source.split("/")[-1].split("?")[0]
 
     @property
     def full_s3_html_path(self):
@@ -94,9 +95,9 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         params["source"] = self.allowed_domains[0].split(".")[1]
         params["bot_name"] = self.settings["BOT_NAME"]
         params["partitions"] = self.determine_partitions()
-        params[
-            "file_name"
-        ] = f"{self.company_name}-{self.allowed_domains[0].split('.')[1]}.html"
+        params["file_name"] = (
+            f"{self.company_name}-{self.allowed_domains[0].split('.')[1]}.html"
+        )
 
         return params
 
@@ -126,26 +127,18 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             self.export_html(response.text)
             return response.text
 
-    def parse(self, response):
-        response_html = self.finalize_response(response)
-        selector = Selector(text=response_html, type="html")
-        all_departments = selector.xpath('//section[contains(@class, "level")]')
-
+    # Greenhouse has exposed a new URL with different features for scraping for some companies
+    def parse_job_boards_prefix(self, all_departments):
         for i, department in enumerate(all_departments):
             il = ItemLoader(
                 item=GreenhouseJobDepartmentsItem(),
                 selector=Selector(text=department.get(), type="html"),
             )
-            dept_loader = il.nested_xpath(
-                f"//section[contains(@class, 'level')]/*[starts-with(name(), 'h')]"
-            )
             self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
 
-            dept_loader.add_xpath("department_id", "@id")
-            dept_loader.add_xpath("department_name", "text()")
-            il.add_xpath(
-                "department_category", "//section[contains(@class, 'level')]/@class"
-            )
+            il.add_value("department_id", self.company_name + "_" + department.get())
+            il.add_value("department_name", department.get())
+            il.add_value("department_category", "level-0")
 
             il.add_value("id", self.determine_row_id(i))
             il.add_value("created_at", self.created_at)
@@ -158,5 +151,50 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             il.add_value("existing_html_used", self.existing_html_used)
 
             yield il.load_item()
+
+    def parse(self, response):
+        response_html = self.finalize_response(response)
+        selector = Selector(text=response_html, type="html")
+        if self.careers_page_url.split(".")[0].split("/")[-1] == "job-boards":
+            all_departments = selector.xpath(
+                "//div[(@class='job-posts')]/*[starts-with(name(), 'h')]/text()"
+            )
+            self.parse_job_boards_prefix(all_departments)
+            if len(all_departments) != 0:
+                self.page_number += 1
+                yield response.follow(
+                    self.careers_page_url + f"?page={self.page_number}", self.parse
+                )
+
+        else:
+            all_departments = selector.xpath('//section[contains(@class, "level")]')
+
+            for i, department in enumerate(all_departments):
+                il = ItemLoader(
+                    item=GreenhouseJobDepartmentsItem(),
+                    selector=Selector(text=department.get(), type="html"),
+                )
+                dept_loader = il.nested_xpath(
+                    f"//section[contains(@class, 'level')]/*[starts-with(name(), 'h')]"
+                )
+                self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
+
+                dept_loader.add_xpath("department_id", "@id")
+                dept_loader.add_xpath("department_name", "text()")
+                il.add_xpath(
+                    "department_category", "//section[contains(@class, 'level')]/@class"
+                )
+
+                il.add_value("id", self.determine_row_id(i))
+                il.add_value("created_at", self.created_at)
+                il.add_value("updated_at", self.updated_at)
+
+                il.add_value("source", self.html_source)
+                il.add_value("company_name", self.company_name)
+                il.add_value("run_hash", self.run_hash)
+                il.add_value("raw_html_file_location", self.full_s3_html_path)
+                il.add_value("existing_html_used", self.existing_html_used)
+
+                yield il.load_item()
 
             # self.logger.info(f"{dep_xpath} Department here")

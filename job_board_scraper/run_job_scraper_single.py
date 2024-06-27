@@ -20,13 +20,13 @@ if careers_page_url.split(".")[1] == "greenhouse":
     process.crawl(
         GreenhouseJobDepartmentsSpider,
         careers_page_url=careers_page_url,
-        use_existing_html=True,
+        use_existing_html=False,
         run_hash=run_hash,
     )
     process.crawl(
         GreenhouseJobsOutlineSpider,
         careers_page_url=careers_page_url,
-        use_existing_html=True,
+        use_existing_html=False,
         run_hash=run_hash,
     )
 elif careers_page_url.split(".")[1] == "lever":

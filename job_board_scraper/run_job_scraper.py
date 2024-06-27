@@ -30,14 +30,14 @@ def run_spider(single_url_chunk, chunk_number):
             process.crawl(
                 GreenhouseJobDepartmentsSpider,
                 careers_page_url=careers_page_url,
-                use_existing_html=True,
+                use_existing_html=False,
                 run_hash=run_hash,
                 url_id=chunk_number * len(single_url_chunk) + i,
             )
             process.crawl(
                 GreenhouseJobsOutlineSpider,
                 careers_page_url=careers_page_url,
-                use_existing_html=True,
+                use_existing_html=False,
                 run_hash=run_hash,
                 url_id=chunk_number * len(single_url_chunk) + i,
             )
@@ -45,7 +45,7 @@ def run_spider(single_url_chunk, chunk_number):
             process.crawl(
                 LeverJobsOutlineSpider,
                 careers_page_url=careers_page_url,
-                use_existing_html=True,
+                use_existing_html=False,
                 run_hash=run_hash,
                 url_id=chunk_number * len(single_url_chunk) + i,
             )
