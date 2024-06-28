@@ -128,29 +128,28 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             return response.text
 
     # Greenhouse has exposed a new URL with different features for scraping for some companies
-    def parse_job_boards_prefix(self, all_departments):
-        for i, department in enumerate(all_departments):
-            il = ItemLoader(
-                item=GreenhouseJobDepartmentsItem(),
-                selector=Selector(text=department.get(), type="html"),
-            )
-            self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
+    def parse_job_boards_prefix(self, i, department):
+        il = ItemLoader(
+            item=GreenhouseJobDepartmentsItem(),
+            selector=Selector(text=department.get(), type="html"),
+        )
+        self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
 
-            il.add_value("department_id", self.company_name + "_" + department.get())
-            il.add_value("department_name", department.get())
-            il.add_value("department_category", "level-0")
+        il.add_value("department_id", self.company_name + "_" + department.get())
+        il.add_value("department_name", department.get())
+        il.add_value("department_category", "level-0")
 
-            il.add_value("id", self.determine_row_id(i))
-            il.add_value("created_at", self.created_at)
-            il.add_value("updated_at", self.updated_at)
+        il.add_value("id", self.determine_row_id(i))
+        il.add_value("created_at", self.created_at)
+        il.add_value("updated_at", self.updated_at)
 
-            il.add_value("source", self.html_source)
-            il.add_value("company_name", self.company_name)
-            il.add_value("run_hash", self.run_hash)
-            il.add_value("raw_html_file_location", self.full_s3_html_path)
-            il.add_value("existing_html_used", self.existing_html_used)
+        il.add_value("source", self.html_source)
+        il.add_value("company_name", self.company_name)
+        il.add_value("run_hash", self.run_hash)
+        il.add_value("raw_html_file_location", self.full_s3_html_path)
+        il.add_value("existing_html_used", self.existing_html_used)
 
-            yield il.load_item()
+        return il
 
     def parse(self, response):
         response_html = self.finalize_response(response)
@@ -159,12 +158,40 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             all_departments = selector.xpath(
                 "//div[(@class='job-posts')]/*[starts-with(name(), 'h')]/text()"
             )
-            self.parse_job_boards_prefix(all_departments)
+            for i, department in enumerate(all_departments):
+                il = self.parse_job_boards_prefix(i, department)
+                yield il.load_item()
             if len(all_departments) != 0:
                 self.page_number += 1
                 yield response.follow(
                     self.careers_page_url + f"?page={self.page_number}", self.parse
                 )
+
+            # for i, department in enumerate(all_departments):
+            #     il = ItemLoader(
+            #         item=GreenhouseJobDepartmentsItem(),
+            #         selector=Selector(text=department.get(), type="html"),
+            #     )
+            #     self.logger.info(f"Parsing row {i+1}, {self.company_name}, {self.name}")
+
+            #     department_id = self.company_name + "_" + department.get()
+            #     il.add_value("department_id", department_id)
+            #     il.add_value("department_name", department.get())
+            #     il.add_value("department_category", "level-0")
+
+            #     il.add_value("id", self.determine_row_id(i))
+            #     il.add_value("created_at", self.created_at)
+            #     il.add_value("updated_at", self.updated_at)
+
+            #     il.add_value("source", self.html_source)
+            #     il.add_value("company_name", self.company_name)
+            #     il.add_value("run_hash", self.run_hash)
+            #     il.add_value("raw_html_file_location", self.full_s3_html_path)
+            #     il.add_value("existing_html_used", self.existing_html_used)
+
+            #     # print(il.load_item())
+
+            #     yield il.load_item()
 
         else:
             all_departments = selector.xpath('//section[contains(@class, "level")]')

@@ -22,7 +22,7 @@ load_dotenv()
 
 class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
     name = "greenhouse_jobs_outline"
-    allowed_domains = ["boards.greenhouse.io"]
+    allowed_domains = ["boards.greenhouse.io", "job-boards.greenhouse.io"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,55 +31,59 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
         self.logger.info(f"Initialized Spider, {self.html_source}")
         self.page_number = 1
 
-    def parse_job_boards_prefix(self, job_posts):
-        for i, job_post in enumerate(job_posts):
-            stratified_selector = Selector(text=job_post.get(), type="html")
+    def get_department_ids(self, job_post):
+        stratified_selector = Selector(text=job_post.get(), type="html")
 
-            primary_department = job_posts.xpath(
-                "//div[(@class='job-posts')]/*[starts-with(name(), 'h')]/text()"
-            ).get()
+        primary_department = stratified_selector.xpath(
+            "//*[starts-with(name(), 'h')]/text()"
+        ).get()
 
-            department_ids = primary_department
+        department_ids = self.company_name + "_" + primary_department
 
-            job_openings = stratified_selector.xpath("//td[@class='cell']")
+        job_openings = stratified_selector.xpath("//td[@class='cell']")
 
-            for j, opening in enumerate(job_openings):
-                il = ItemLoader(
-                    item=GreenhouseJobsOutlineItem(),
-                    selector=Selector(text=opening.get(), type="html"),
-                )
-                self.logger.info(f"Parsing row {j+1}, {self.company_name} {self.name}")
+        return department_ids, job_openings
 
-                il.add_value("department_ids", department_ids)
-                # nested.add_xpath("office_ids", "@office_id")
-                il.add_xpath("opening_link", "//a/@href")
-                il.add_xpath(
-                    "opening_title", "//p[contains(@class, 'body--medium')]/text()"
-                )
-                il.add_xpath(
-                    "location", "//p[contains(@class, 'body--metadata')]/text()"
-                )
+    def parse_job_boards_prefix(self, i, j, department_ids, opening):
+        il = ItemLoader(
+            item=GreenhouseJobsOutlineItem(),
+            selector=Selector(text=opening.get(), type="html"),
+        )
+        self.logger.info(f"Parsing row {j+1}, {self.company_name} {self.name}")
 
-                il.add_value("id", self.determine_row_id(i))
-                il.add_value("created_at", self.created_at)
-                il.add_value("updated_at", self.updated_at)
-                il.add_value("source", self.html_source)
-                il.add_value("run_hash", self.run_hash)
-                il.add_value("raw_html_file_location", self.full_s3_html_path)
-                il.add_value("existing_html_used", self.existing_html_used)
+        il.add_value("department_ids", department_ids)
+        # nested.add_xpath("office_ids", "@office_id")
+        il.add_xpath("opening_link", "//a/@href")
+        il.add_xpath("opening_title", "//p[contains(@class, 'body--medium')]/text()")
+        il.add_xpath("location", "//p[contains(@class, 'body--metadata')]/text()")
 
-                yield il.load_item()
+        il.add_value("id", self.determine_row_id(i * 1000 + j))
+        il.add_value("created_at", self.created_at)
+        il.add_value("updated_at", self.updated_at)
+        il.add_value("source", self.html_source)
+        il.add_value("run_hash", self.run_hash)
+        il.add_value("raw_html_file_location", self.full_s3_html_path)
+        il.add_value("existing_html_used", self.existing_html_used)
+
+        # yield il.load_item()
+
+        return il
 
     def parse(self, response):
         response_html = self.finalize_response(response)
         selector = Selector(text=response_html, type="html")
         if self.careers_page_url.split(".")[0].split("/")[-1] == "job-boards":
             job_posts = selector.xpath("//div[(@class='job-posts')]")
-            self.parse_job_boards_prefix(job_posts)
+            for i, job_post in enumerate(job_posts):
+                department_ids, job_openings = self.get_department_ids(job_post)
+                for j, opening in enumerate(job_openings):
+                    il = self.parse_job_boards_prefix(i, j, department_ids, opening)
+                    yield il.load_item()
             if len(job_posts) != 0:
                 self.page_number += 1
                 yield response.follow(
-                    self.careers_page_url + f"?page={self.page_number}", self.parse
+                    url=self.careers_page_url + f"?page={self.page_number}",
+                    callback=self.parse,
                 )
 
         else:
