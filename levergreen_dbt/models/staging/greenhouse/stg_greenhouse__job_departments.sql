@@ -9,6 +9,11 @@ with greenhouse_departments_by_levergreen_id as (
             order by
                 updated_at
         ) as earliest_levergreen_id_row
+        row_number() over(
+            partition by department_id, run_hash
+            order by
+                updated_at
+        ) as earliest_department_id_row
     from
         {{ source(
             'greenhouse',
@@ -16,6 +21,7 @@ with greenhouse_departments_by_levergreen_id as (
         ) }}
     where updated_at > 1684600000
 )
+
 select
     id,
     levergreen_id,
@@ -35,4 +41,5 @@ select
 from
     greenhouse_departments_by_levergreen_id
 where
-    earliest_levergreen_id_row = 1
+    earliest_levergreen_id_row = 1 and
+    earliest_department_id_row = 1
