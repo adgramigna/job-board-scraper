@@ -8,7 +8,7 @@ with greenhouse_departments_by_levergreen_id as (
             partition by levergreen_id
             order by
                 updated_at
-        ) as earliest_levergreen_id_row
+        ) as earliest_levergreen_id_row,
         row_number() over(
             partition by department_id, run_hash
             order by
