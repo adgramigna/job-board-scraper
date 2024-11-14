@@ -33,7 +33,7 @@ elif careers_page_url.split(".")[1] == "lever":
     process.crawl(
         LeverJobsOutlineSpider,
         careers_page_url=careers_page_url,
-        use_existing_html=True,
+        use_existing_html=False,
         run_hash=run_hash,
     )
 
