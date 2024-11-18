@@ -47,7 +47,7 @@ sources:
             description: Department Category. Specifies if deparmtent is main department or sub department.
             tests:
               - accepted_values:
-                  values: ['level-0', 'level-1', 'level-2', 'level-3'] #Mercury loves levels.
+                  values: ['level-0', 'level-1', 'level-2', 'level-3', 'level-4'] #Anduril loves levels.
                   config:  
                     severity: warn
           - name: department_id
