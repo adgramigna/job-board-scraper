@@ -49,7 +49,7 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
             item=GreenhouseJobsOutlineItem(),
             selector=Selector(text=opening.get(), type="html"),
         )
-        self.logger.info(f"Parsing row {j+1}, {self.company_name} {self.name}")
+        # self.logger.info(f"Parsing row {j+1}, {self.company_name} {self.name}")
 
         il.add_value("department_ids", department_ids)
         # nested.add_xpath("office_ids", "@office_id")
@@ -57,7 +57,7 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
         il.add_xpath("opening_title", "//p[contains(@class, 'body--medium')]/text()")
         il.add_xpath("location", "//p[contains(@class, 'body--metadata')]/text()")
 
-        il.add_value("id", self.determine_row_id(i * 1000 + j))
+        il.add_value("id", self.determine_row_id(i * 1000 + j * 100 + self.page_number))
         il.add_value("created_at", self.created_at)
         il.add_value("updated_at", self.updated_at)
         il.add_value("source", self.html_source)
@@ -78,6 +78,7 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
                 department_ids, job_openings = self.get_department_ids(job_post)
                 for j, opening in enumerate(job_openings):
                     il = self.parse_job_boards_prefix(i, j, department_ids, opening)
+                    print(il.load_item().get("opening_title"), il.load_item().get("id"))
                     yield il.load_item()
             if len(job_posts) != 0:
                 self.page_number += 1
