@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 scrapy
 boto3
 elementary-data
@@ -14,3 +15,23 @@ connectorx
 adbc-driver-postgresql
 numpy
 setuptools
+=======
+scrapy==2.10.1
+boto3==1.26.55
+elementary-data==0.16.1
+python-dotenv==0.21.1
+hashids==1.3.1
+pyarrow==18.0.0
+pandas==2.2.3
+psycopg2-binary==2.9.6
+dbt-core==1.8.7
+dbt-postgres==1.8.2
+polars[sqlalchemy]==0.19.0
+duckdb==1.1.3
+msgspec==0.18.4
+ipykernel==6.29.2
+connectorx==0.4.0
+adbc-driver-postgresql==0.10.0
+numpy==1.26.4
+setuptools==71.1.0
+>>>>>>> 612e42d39689ae877851bc67fb38eba553fa39c9
