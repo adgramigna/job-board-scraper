@@ -67,7 +67,7 @@ def run_spider(single_url_chunk, chunk_number):
 
 
 if __name__ == "__main__":
-    chunk_size = int(os.getenv("CHUNK_SIZE", 50))
+    chunk_size = int(os.getenv("CHUNK_SIZE", 200))
 
     connection = psycopg2.connect(
         host=os.getenv("PG_HOST"),
