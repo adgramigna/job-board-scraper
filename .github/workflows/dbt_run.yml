@@ -65,6 +65,7 @@ jobs:
         with:
           warehouse-type: postgres
           project-dir: levergreen_dbt
+          adapter-version: 1.8.2
           edr-command:
             edr send-report
               --aws-access-key-id "${{ secrets.AWS_ACCESS_KEY_ID }}"
