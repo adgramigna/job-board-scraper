@@ -121,6 +121,6 @@ def create_insert_item(table_name, item):
     table_columns = get_table_columns(table_name)
     percent_s, table_values = get_table_values(table_name, item)
     return (
-        f"""insert into {table_name} {table_columns} values {percent_s}""",
+        f"""INSERT INTO {table_name} {table_columns} VALUES {percent_s}""",
         table_values,
     )

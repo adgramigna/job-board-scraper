@@ -22,7 +22,12 @@ load_dotenv()
 
 class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
     name = "greenhouse_jobs_outline"
-    allowed_domains = ["boards.greenhouse.io", "job-boards.greenhouse.io"]
+    allowed_domains = [
+        "boards.greenhouse.io",
+        "job-boards.greenhouse.io",
+        "boards.greenhouse.io",
+        "greenhouse.io",        
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,71 +50,94 @@ class GreenhouseJobsOutlineSpider(GreenhouseJobDepartmentsSpider):
         return department_ids, job_openings
 
     def parse_job_boards_prefix(self, i, j, department_ids, opening):
-        il = ItemLoader(
-            item=GreenhouseJobsOutlineItem(),
-            selector=Selector(text=opening.get(), type="html"),
-        )
-        # self.logger.info(f"Parsing row {j+1}, {self.company_name} {self.name}")
-
-        il.add_value("department_ids", department_ids)
-        # nested.add_xpath("office_ids", "@office_id")
-        il.add_xpath("opening_link", "//a/@href")
-        il.add_xpath("opening_title", "//p[contains(@class, 'body--medium')]/text()")
-        il.add_xpath("location", "//p[contains(@class, 'body--metadata')]/text()")
-
-        il.add_value("id", self.determine_row_id(i * 1000 + j * 100 + self.page_number))
-        il.add_value("created_at", self.created_at)
-        il.add_value("updated_at", self.updated_at)
-        il.add_value("source", self.html_source)
-        il.add_value("run_hash", self.run_hash)
-        il.add_value("raw_html_file_location", self.full_s3_html_path)
-        il.add_value("existing_html_used", self.existing_html_used)
-
-        # yield il.load_item()
-
-        return il
+        try:
+            il = ItemLoader(
+                item=GreenhouseJobsOutlineItem(),
+                selector=Selector(text=opening.get(), type="html"),
+            )
+            
+            il.add_value("department_ids", department_ids)
+            il.add_xpath("opening_link", "//a/@href")
+            il.add_xpath("opening_title", "//p[contains(@class, 'body--medium')]/text()")
+            il.add_xpath("location", "//p[contains(@class, 'body--metadata')]/text()")
+            
+            il.add_value("id", self.determine_row_id(i * 1000 + j * 100 + self.page_number))
+            il.add_value("created_at", self.created_at)
+            il.add_value("updated_at", self.updated_at)
+            il.add_value("source", self.html_source)
+            il.add_value("run_hash", self.run_hash)
+            il.add_value("raw_html_file_location", self.full_s3_html_path)
+            il.add_value("existing_html_used", self.existing_html_used)
+            
+            item = il.load_item()
+            self.logger.info(f"Created item in parse_job_boards_prefix: {item}")
+            return il
+        except Exception as e:
+            self.logger.error(f"Error in parse_job_boards_prefix: {e}")
+            raise e
 
     def parse(self, response):
-        response_html = self.finalize_response(response)
-        selector = Selector(text=response_html, type="html")
-        if self.careers_page_url.split(".")[0].split("/")[-1] == "job-boards":
-            job_posts = selector.xpath("//div[(@class='job-posts')]")
-            for i, job_post in enumerate(job_posts):
-                department_ids, job_openings = self.get_department_ids(job_post)
-                for j, opening in enumerate(job_openings):
-                    il = self.parse_job_boards_prefix(i, j, department_ids, opening)
-                    print(il.load_item().get("opening_title"), il.load_item().get("id"))
-                    yield il.load_item()
-            if len(job_posts) != 0:
-                self.page_number += 1
-                yield response.follow(
-                    url=self.careers_page_url + f"?page={self.page_number}",
-                    callback=self.parse,
-                )
-
-        else:
-            job_openings = selector.xpath('//div[@class="opening"]')
-
-            for i, opening in enumerate(job_openings):
-                il = ItemLoader(
-                    item=GreenhouseJobsOutlineItem(),
-                    selector=Selector(text=opening.get(), type="html"),
-                )
-                self.logger.info(f"Parsing row {i+1}, {self.company_name} {self.name}")
-                nested = il.nested_xpath('//div[@class="opening"]')
-
-                nested.add_xpath("department_ids", "@department_id")
-                nested.add_xpath("office_ids", "@office_id")
-                il.add_xpath("opening_link", "//a/@href")
-                il.add_xpath("opening_title", "//a/text()")
-                il.add_xpath("location", "//span/text()")
-
-                il.add_value("id", self.determine_row_id(i))
-                il.add_value("created_at", self.created_at)
-                il.add_value("updated_at", self.updated_at)
-                il.add_value("source", self.html_source)
-                il.add_value("run_hash", self.run_hash)
-                il.add_value("raw_html_file_location", self.full_s3_html_path)
-                il.add_value("existing_html_used", self.existing_html_used)
-
-                yield il.load_item()
+        try:
+            response_html = self.finalize_response(response)
+            selector = Selector(text=response_html, type="html")
+            
+            if self.careers_page_url.split(".")[0].split("/")[-1] == "job-boards":
+                job_posts = selector.xpath("//div[(@class='job-posts')]")
+                self.logger.info(f"Found {len(job_posts)} job posts")
+                
+                for i, job_post in enumerate(job_posts):
+                    try:
+                        department_ids, job_openings = self.get_department_ids(job_post)
+                        self.logger.info(f"Processing department {department_ids} with {len(job_openings)} openings")
+                        
+                        for j, opening in enumerate(job_openings):
+                            il = self.parse_job_boards_prefix(i, j, department_ids, opening)
+                            item = il.load_item()
+                            self.logger.info(f"Yielding job item: {item}")
+                            yield item
+                            
+                    except Exception as e:
+                        self.logger.error(f"Error processing job post {i}: {e}")
+                        
+                if len(job_posts) != 0:
+                    next_page = self.careers_page_url + f"?page={self.page_number + 1}"
+                    self.logger.info(f"Following next page: {next_page}")
+                    self.page_number += 1
+                    yield response.follow(url=next_page, callback=self.parse)
+            else:
+                job_openings = selector.xpath('//div[@class="opening"]')
+                self.logger.info(f"Found {len(job_openings)} job openings")
+                
+                for i, opening in enumerate(job_openings):
+                    try:
+                        il = ItemLoader(
+                            item=GreenhouseJobsOutlineItem(),
+                            selector=Selector(text=opening.get(), type="html"),
+                        )
+                        nested = il.nested_xpath('//div[@class="opening"]')
+                        
+                        nested.add_xpath("department_ids", "@department_id")
+                        nested.add_xpath("office_ids", "@office_id")
+                        il.add_xpath("opening_link", "//a/@href")
+                        il.add_xpath("opening_title", "//a/text()")
+                        il.add_xpath("location", "//span/text()")
+                        
+                        il.add_value("id", self.determine_row_id(i))
+                        il.add_value("created_at", self.created_at)
+                        il.add_value("updated_at", self.updated_at)
+                        il.add_value("source", self.html_source)
+                        il.add_value("run_hash", self.run_hash)
+                        il.add_value("raw_html_file_location", self.full_s3_html_path)
+                        il.add_value("existing_html_used", self.existing_html_used)
+                        
+                        self.logger.info(f"Yielding job item: {il.load_item().get('opening_title')}")
+                        try:
+                            yield il.load_item()
+                        except Exception as e:
+                            self.logger.error(f"Error yielding item: {e}")
+                        
+                    except Exception as e:
+                        self.logger.error(f"Error processing opening {i}: {e}")
+                        
+        except Exception as e:
+            self.logger.error(f"Error in parse method: {e}")

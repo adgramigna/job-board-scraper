@@ -107,10 +107,10 @@ ashby_locations_id = 5
 
 run_hash = util.hash_ids.encode(int(time.time()))
 
-pg_host = os.environ.get("PG_HOST")
-pg_user = os.environ.get("PG_USER")
-pg_pw = os.environ.get("PG_PASSWORD")
-pg_db = os.environ.get("PG_DATABASE")
+pg_host = os.getenv("PG_HOST")
+pg_user = os.getenv("PG_USER")
+pg_pw = os.getenv("PG_PASSWORD")
+pg_db = os.getenv("PG_DATABASE")
 
 connection_string = f"postgresql://{pg_user}:{pg_pw}@{pg_host}/{pg_db}"
 
@@ -125,7 +125,7 @@ cursor.execute(finalize_table_schema("ashby_jobs_outline"))
 cursor.execute(finalize_table_schema("ashby_job_departments"))
 cursor.execute(finalize_table_schema("ashby_job_locations"))
 connection.commit()
-cursor.execute(os.environ.get("ASHBY_PAGES_TO_SCRAPE_QUERY"))
+cursor.execute(os.getenv("ASHBY_PAGES_TO_SCRAPE_QUERY"))
 careers_page_urls = cursor.fetchall()
 cursor.close()
 connection.close()
@@ -136,7 +136,7 @@ ashby_api_endpoint = (
     "https://jobs.ashbyhq.com/api/non-user-graphql?op=ApiJobBoardWithTeams"
 )
 
-f = open("queries/ashby_jobs_outline.graphql")
+f = open("/Users/arnav/Downloads/GitHub/job-board-scraper-arnav/job_board_scraper/queries/ashby_jobs_outline.graphql")
 query = f.read()
 
 headers = {"Content-Type": "application/json"}
@@ -155,9 +155,12 @@ for i, url in enumerate(careers_page_urls):
     current_date_utc = datetime.utcfromtimestamp(current_time).strftime("%Y-%m-%d")
 
     s3_json_path = f"requests/ashby/date={current_date_utc}/company={ashby_company}/{ashby_company}-ashby.json"
-    full_s3_json_path = (
-        "s3://" + os.environ.get("RAW_HTML_S3_BUCKET") + "/" + s3_json_path
-    )
+    raw_html_s3_bucket = os.getenv("RAW_HTML_S3_BUCKET")
+    if raw_html_s3_bucket:
+        full_s3_json_path = "s3://" + raw_html_s3_bucket + "/" + s3_json_path
+    else:
+
+        full_s3_json_path = None
     ashby_job_board_source = f"https://jobs.ashbyhq.com/{ashby_company_for_source}"
 
     response = requests.request(
@@ -170,7 +173,7 @@ for i, url in enumerate(careers_page_urls):
     response_text = response.text
     response_json = json.loads(response_text)
     if response_json["data"]["jobBoard"] is None:
-        logger.error(f"No data for {ashby_company}")
+
         continue
     else:
         logger.info(f"Got data for {ashby_company}")
@@ -342,10 +345,10 @@ for i, url in enumerate(careers_page_urls):
                 from ashby_postings_final
             """
         ).pl().write_database(
-            "ashby_jobs_outline",
-            connection_string,
-            if_exists="append",
+            table_name="ashby_jobs_outline",
+            connection=connection_string,
             engine="sqlalchemy",
+            if_table_exists="append"
         )
 
     if len(ashby_departments_final) > 0:
@@ -366,10 +369,10 @@ for i, url in enumerate(careers_page_urls):
                 from ashby_departments_final
             """
         ).pl().write_database(
-            "ashby_job_departments",
-            connection_string,
-            if_exists="append",
+            table_name="ashby_job_departments",
+            connection=connection_string,
             engine="sqlalchemy",
+            if_table_exists="append"
         )
     if len(ashby_locations_final) > 0:
         con.sql(
@@ -389,10 +392,10 @@ for i, url in enumerate(careers_page_urls):
                 from ashby_locations_final
             """
         ).pl().write_database(
-            "ashby_job_locations",
-            connection_string,
-            if_exists="append",
+            table_name="ashby_job_locations",
+            connection=connection_string,
             engine="sqlalchemy",
+            if_table_exists="append"
         )
 
     # break

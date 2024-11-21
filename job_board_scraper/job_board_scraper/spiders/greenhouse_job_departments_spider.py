@@ -1,4 +1,5 @@
 # import logging
+import logging
 import scrapy
 import time
 
@@ -11,6 +12,7 @@ from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
 from scrapy.utils.project import get_project_settings
 from datetime import datetime
+from twisted.internet.error import DNSLookupError, TCPTimedOutError, TimeoutError
 
 load_dotenv()
 # logger = logging.getLogger("logger")
@@ -18,7 +20,11 @@ load_dotenv()
 
 class GreenhouseJobDepartmentsSpider(scrapy.Spider):
     name = "greenhouse_job_departments"
-    allowed_domains = ["boards.greenhouse.io", "job-boards.greenhouse.io"]
+    allowed_domains = [
+        "boards.greenhouse.io",
+        "job-boards.greenhouse.io",
+        "greenhouse.io",
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,19 +48,27 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         )
         self.existing_html_used = False  # Initially set this to false, change later on in finalize_response if True
         self.logger.info(f"Initialized Spider, {self.html_source}")
-
-    @property
-    def s3_client(self):
-        return boto3.client(
-            "s3",
-            aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
-            region_name=os.environ.get("AWS_REGION"),
-        )
+        
+        self.raw_html_s3_bucket = os.getenv("RAW_HTML_S3_BUCKET")
+        if self.raw_html_s3_bucket:
+            self.s3_client = boto3.client(
+                "s3",
+                aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+                aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+                region_name=os.getenv("AWS_REGION"),
+            )
+            logging.info("S3 Client initialized.")
+        else:
+            self.s3_client = None
+            logging.info("RAW_HTML_S3_BUCKET is not set. Skipping HTML export.")
 
     @property
     def s3_html_path(self):
-        return self.settings["S3_HTML_PATH"].format(**self._get_uri_params())
+        s3_path_template = self.settings.get("S3_HTML_PATH")
+        if not s3_path_template:
+            self.logger.warning("S3_HTML_PATH is not set in settings. Skipping HTML export.")
+            return None
+        return s3_path_template.format(**self._get_uri_params())
 
     @property
     def html_file(self):
@@ -85,7 +99,14 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
 
     @property
     def full_s3_html_path(self):
-        return "s3://" + self.settings["S3_HTML_BUCKET"] + "/" + self.s3_html_path
+        # Ensure S3_HTML_BUCKET is set
+        s3_html_bucket = self.settings.get("S3_HTML_BUCKET")
+        if not s3_html_bucket:
+            self.logger.warning("S3_HTML_BUCKET is not set. Skipping HTML export.")
+            return None
+
+        # Construct the full S3 path
+        return "s3://" + s3_html_bucket + "/" + self.s3_html_path
 
     def determine_partitions(self):
         return f"date={self.current_date_utc}/company={self.company_name}"
@@ -102,16 +123,35 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         return params
 
     def start_requests(self):
-        yield scrapy.Request(url=self.url, callback=self.parse)
+        if not self.careers_page_url:
+            self.logger.error("No careers page URL provided")
+            return
+        
+        yield scrapy.Request(
+            url=self.careers_page_url,
+            callback=self.parse,
+            dont_filter=True,
+            errback=self.errback_httpbin,
+            meta={'dont_retry': True}
+        )
 
     def export_html(self, response_html):
-        self.s3_client.put_object(
-            Bucket=self.settings["S3_HTML_BUCKET"],
-            Key=self.s3_html_path,
-            Body=response_html,
-            ContentType="text/html",
-        )
-        self.logger.info("Uploaded raw HTML to s3")
+        if not self.s3_html_path:
+            self.logger.warning("S3_HTML_PATH is not set. Skipping HTML export.")
+            return
+        if not self.s3_client:
+            self.logger.warning("S3 client is not initialized. Skipping HTML export.")
+            return
+        try:
+            self.s3_client.put_object(
+                Bucket=self.settings["S3_HTML_BUCKET"],
+                Key=self.s3_html_path,
+                Body=response_html,
+                ContentType="text/html",
+            )
+            self.logger.info("Uploaded raw HTML to s3")
+        except Exception as e:
+            self.logger.error(f"Failed to upload HTML to S3: {e}")
 
     def determine_row_id(self, i):
         return util.hash_ids.encode(
@@ -124,7 +164,8 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
             self.existing_html_used = True
             return self.html_file["Body"].read()
         else:
-            self.export_html(response.text)
+            if self.s3_client:
+                self.export_html(response.text)
             return response.text
 
     # Greenhouse has exposed a new URL with different features for scraping for some companies
@@ -152,16 +193,24 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         return il
 
     def parse(self, response):
+        self.logger.info(f"Parsing URL: {response.url}")
         response_html = self.finalize_response(response)
         selector = Selector(text=response_html, type="html")
+        
+        # Add debug logging
         if self.careers_page_url.split(".")[0].split("/")[-1] == "job-boards":
-            all_departments = selector.xpath(
-                "//div[(@class='job-posts')]/*[starts-with(name(), 'h')]/text()"
-            )
+            all_departments = selector.xpath("//div[contains(@class, 'job-posts')]/*[starts-with(name(), 'h')]/text()")
+            num_departments = len(all_departments)
+            self.logger.info(f"Found {num_departments} departments")
+            
+            if num_departments == 0:
+                self.logger.warning("No departments found with the current XPath selector.")
+            
             for i, department in enumerate(all_departments):
                 il = self.parse_job_boards_prefix(i, department)
                 yield il.load_item()
-            if len(all_departments) != 0:
+            
+            if num_departments != 0:
                 self.page_number += 1
                 yield response.follow(
                     self.careers_page_url + f"?page={self.page_number}", self.parse
@@ -195,7 +244,11 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
 
         else:
             all_departments = selector.xpath('//section[contains(@class, "level")]')
-
+            self.logger.info(f"Found {len(all_departments)} departments")
+            
+            if len(all_departments) == 0:
+                self.logger.warning("No departments found with the current XPath selector.")
+            
             for i, department in enumerate(all_departments):
                 il = ItemLoader(
                     item=GreenhouseJobDepartmentsItem(),
@@ -223,5 +276,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
                 il.add_value("existing_html_used", self.existing_html_used)
 
                 yield il.load_item()
-
             # self.logger.info(f"{dep_xpath} Department here")
+
+    def errback_httpbin(self, failure):
+        self.logger.error(f"Request failed: {failure.value}")

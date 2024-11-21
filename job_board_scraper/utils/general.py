@@ -15,22 +15,22 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("logger")
 
 hash_ids = Hashids(
-    salt=os.environ.get("HASHIDS_SALT"), alphabet="abcdefghijklmnopqrstuvwxyz1234567890"
+    salt=os.getenv("HASHIDS_SALT"), alphabet="abcdefghijklmnopqrstuvwxyz1234567890"
 )
 
 
 def setup_postgres_connection(job_board_provider):
     conn = psycopg2.connect(
-        host=os.environ.get("PG_HOST"),
-        user=os.environ.get("PG_USER"),
-        password=os.environ.get("PG_PASSWORD"),
-        dbname=os.environ.get("PG_DATABASE"),
-        port=os.environ.get("PG_PORT"),
+        host=os.getenv("PG_HOST"),
+        user=os.getenv("PG_USER"),
+        password=os.getenv("PG_PASSWORD"),
+        dbname=os.getenv("PG_DATABASE"),
+        port=os.getenv("PG_PORT"),
     )
 
     cursor = conn.cursor()
     cursor.execute(
-        os.environ.get("GET_BOARD_TOKENS_BASE_QUERY"), {"provider": job_board_provider}
+        os.getenv("GET_BOARD_TOKENS_BASE_QUERY"), {"provider": job_board_provider}
     )
     conn.commit()
 
@@ -69,3 +69,11 @@ def initial_error_check(board_token, job_board):
         return True
 
     return False
+
+
+def create_insert_item(table_name, item):
+    columns = ', '.join(item.keys())
+    placeholders = ', '.join(['%s'] * len(item))
+    insert_statement = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+    values = [item[key] for key in item.keys()]
+    return insert_statement, values

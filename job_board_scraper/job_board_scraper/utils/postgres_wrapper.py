@@ -5,10 +5,11 @@ import psycopg2
 class PostgresWrapper:
     def __init__(self):
         ## Connection Details
-        self.hostname = os.environ.get("PG_HOST")
-        self.username = os.environ.get("PG_USER")
-        self.password = os.environ.get("PG_PASSWORD")
-        self.database = os.environ.get("PG_DATABASE")
+        self.hostname = os.getenv("PG_HOST")
+        self.username = os.getenv("PG_USER")
+        self.password = os.getenv("PG_PASSWORD")
+        self.database = os.getenv("PG_DATABASE")
+        self.port = os.getenv("PG_PORT")
 
     def connection(self):
         ## Create/Connect to database
@@ -17,6 +18,7 @@ class PostgresWrapper:
             user=self.username,
             password=self.password,
             dbname=self.database,
+            port=self.port,
         )
 
     def cursor(self):

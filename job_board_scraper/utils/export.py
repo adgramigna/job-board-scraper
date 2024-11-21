@@ -3,14 +3,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-pg_user = os.environ.get("PG_USER")
-pg_password = os.environ.get("PG_PASSWORD")
-pg_host = os.environ.get("PG_HOST")
-pg_database = os.environ.get("PG_DATABASE")
-pg_port = os.environ.get("PG_PORT")
+pg_user = os.getenv("PG_USER")
+pg_password = os.getenv("PG_PASSWORD")
+pg_host = os.getenv("PG_HOST")
+pg_database = os.getenv("PG_DATABASE")
+pg_port = os.getenv("PG_PORT")
 
 connection_string = (
-    f"postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_database}"
+    f"postgresql://{pg_user}:{pg_password}@{pg_host}/{pg_database}?sslmode=require"
 )
 
 
@@ -25,7 +25,7 @@ def export_table_to_postgres(df, table_name):
 
 def determine_table_names(job_board_provider):
     if job_board_provider == "rippling":
-        return [os.environ.get("RIPPLING_JOBS_OUTLINE_TABLE_NAME")]
+        return [os.getenv("RIPPLING_JOBS_OUTLINE_TABLE_NAME")]
 
 
 def export_dataframes_to_postgres(table_pairs_dict):

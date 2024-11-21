@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+print("RAW_HTML_S3_BUCKET:", os.getenv("RAW_HTML_S3_BUCKET"))
+
 # FEEDS = {"data.csv": {"format": "csv", "overwrite": True}}
 
 BOT_NAME = "job_board_scraper"
@@ -19,19 +21,19 @@ BOT_NAME = "job_board_scraper"
 SPIDER_MODULES = ["job_board_scraper.spiders"]
 NEWSPIDER_MODULE = "job_board_scraper.spiders"
 
-S3_HTML_BUCKET = os.environ.get("RAW_HTML_S3_BUCKET")
+S3_HTML_BUCKET = os.getenv("RAW_HTML_S3_BUCKET")
 S3_HTML_PATH = "scrapy/{source}/{bot_name}/{partitions}/{file_name}"
 
 DEFAULT_HTML = "https://blank.org"
 
 # Scrapy Logging
-LOG_LEVEL = "INFO"
+LOG_LEVEL = "DEBUG"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'job_scraper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -78,8 +80,7 @@ TELNETCONSOLE_PORT = None  # https://docs.scrapy.org/en/latest/topics/telnetcons
 # }
 
 # Configure item pipelines
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {"job_board_scraper.pipelines.JobScraperPipelinePostgres": 299}
+ITEM_PIPELINES = {"job_board_scraper.pipelines.JobScraperPipelinePostgres": 300}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -105,3 +106,15 @@ ITEM_PIPELINES = {"job_board_scraper.pipelines.JobScraperPipelinePostgres": 299}
 # Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+
+FEEDS = {
+    'items.json': {
+        'format': 'json',
+        'encoding': 'utf8',
+        'store_empty': False,
+        'overwrite': True
+    },
+}
+
+DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
+LOGSTATS_INTERVAL = 0

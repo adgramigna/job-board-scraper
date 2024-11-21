@@ -4,8 +4,8 @@ with all_postings as (
     select * from {{ ref('int_lever_departments_expanded') }}
     union all
     select * from {{ ref('int_ashby_outline_finalized') }}
-    union all
-    select * from {{ ref('stg_rippling__jobs_outline') }}
+    -- union all
+    -- select * from {{ ref('stg_rippling__jobs_outline') }}
 ),
 
 get_earliest_and_latest_dates as (
