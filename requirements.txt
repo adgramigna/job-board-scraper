@@ -12,7 +12,7 @@ polars[sqlalchemy]==0.19.0
 duckdb==0.9.1
 msgspec==0.18.4
 ipykernel==6.29.2
-connectorx==0.3.2
+connectorx==0.4.0
 adbc-driver-postgresql==0.10.0
 numpy==1.26.4
 setuptools==71.1.0
