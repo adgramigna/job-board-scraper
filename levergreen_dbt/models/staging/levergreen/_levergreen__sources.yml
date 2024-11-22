@@ -11,7 +11,7 @@ sources:
         description: List of all the careers page urls to scrape.
         tests:
           - dbt_expectations.expect_table_columns_to_match_set:
-              column_list: ["id", "url", "is_enabled", "is_prospect", "is_web_scraped",
+              column_list: ["id", "company_url", "is_enabled", "is_prospect", "is_web_scraped",
               "job_board_provider", "board_token"]
         columns:
         - name: id
@@ -19,7 +19,7 @@ sources:
           tests:
             - unique
             - not_null
-        - name: url
+        - name: company_url
           description: careers page to be scraped
           tests:
             - unique
