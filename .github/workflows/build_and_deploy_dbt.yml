@@ -29,6 +29,7 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
+          PG_PORT: 5432
     
       - name: Generate dbt documentation
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -38,6 +39,7 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
+          PG_PORT: 5432
   
       - name: Deploy to Github Pages
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -53,6 +55,7 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
+          PG_PORT: 5432
   
       - name: Check Freshness of dbt models
         run: cd levergreen_dbt && dbt source freshness
@@ -61,4 +64,5 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
+          PG_PORT: 5432
 
