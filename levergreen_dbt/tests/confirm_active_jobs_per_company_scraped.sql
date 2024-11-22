@@ -30,5 +30,5 @@ sources as (
 
 select * from unique_active_jobs_per_company as unique_active_jobs
 inner join sources on unique_active_jobs.run_hash = sources.run_hash
-    and unique_active_jobs.source = sources.source
-where num_openings != num_source_openings
+    and unique_active_jobs.source = sources.actual_source
+where unique_active_jobs.num_openings != sources.num_source_openings

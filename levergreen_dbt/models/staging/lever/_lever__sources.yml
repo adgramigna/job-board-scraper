@@ -55,7 +55,7 @@ sources:
             - accepted_values:
                 values: ['On-site', 'Remote', 'Hybrid']
         - name: location
-          description: Single location where the job is posted. Seems more rigid than Greenhouse on first glance, only one posting.
+          description: Single location where the job is posted.
           tests:
             - not_null:
                 config:  

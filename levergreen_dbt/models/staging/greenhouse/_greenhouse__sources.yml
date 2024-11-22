@@ -44,10 +44,10 @@ sources:
             tests:
               - not_null
           - name: department_category
-            description: Department Category. Specifies if deparmtent is main department or sub department.
+            description: Department Category. Specifies if department is main or sub department.
             tests:
               - accepted_values:
-                  values: ['level-0', 'level-1', 'level-2', 'level-3', 'level-4'] #Anduril loves levels.
+                  values: ['level-0', 'level-1', 'level-2', 'level-3', 'level-4', 'level-5']
                   config:  
                     severity: warn
           - name: department_id
