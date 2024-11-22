@@ -50,7 +50,7 @@ final_select as (
         raw_html_file_location, 
         run_hash,
         company_name,
-        coalesce(department_id, 'No Dept') as department_ids,
+        coalesce(department_name, 'No Dept') as department_names,
         coalesce(location, 'Unknown') as location,
         office_ids,
         full_opening_link as opening_link,
