@@ -7,6 +7,7 @@ jobs:
   build_and_deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    environment: .env
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -29,7 +30,7 @@ jobs:
           PG_HOST: ${{ secrets.PG_HOST }}
           PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
           PG_USER: ${{ secrets.PG_USER }}
-          PG_PORT: 5432
+          PG_PORT: ${{ secrets.PG_PORT }}
     
       - name: Generate dbt documentation
         if: ${{ github.ref == 'refs/heads/main' }}
