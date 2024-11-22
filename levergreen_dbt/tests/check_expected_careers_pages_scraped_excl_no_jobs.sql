@@ -5,10 +5,10 @@
 -- If the scraper missed a page due to an unexpected error, we will have mismatches here
 
 with expected_sources as (
-    select distinct company_url as expected_source
+    select distinct url as expected_source
     from {{ source('levergreen', 'job_board_urls') }}
     where is_enabled
-    and company_url != 'https://boards.greenhouse.io/embed/job_board?for=openspace'
+    and url != 'https://boards.greenhouse.io/embed/job_board?for=openspace'
 ),
 
 actual_sources as (

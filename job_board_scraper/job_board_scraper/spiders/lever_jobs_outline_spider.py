@@ -92,7 +92,7 @@ class LeverJobsOutlineSpider(GreenhouseJobsOutlineSpider):
                             self.logger.debug(f"Processing opening {j} with text: {opening.get()}")
                             
                             il.add_value("department_names", departments)
-                            il.add_xpath("opening_link", './/div[@class="posting-apply"]/a/@href')
+                            il.add_xpath("opening_link", '(.//div[@class="posting-apply"]/a/@href|.//a[@class="posting-title"]/@href)[1]')
                             il.add_xpath("opening_title", './/h5[@data-qa="posting-name"]/text()')
                             il.add_xpath(
                                 "workplace_type", 

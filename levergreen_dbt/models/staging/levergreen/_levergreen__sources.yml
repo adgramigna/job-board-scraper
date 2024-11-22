@@ -8,29 +8,29 @@ sources:
 
     tables:
       - name: job_board_urls
-        description: List of all the careers page URLs to scrape.
+        description: List of all the careers page urls to scrape.
         tests:
           - dbt_expectations.expect_table_columns_to_match_set:
-              column_list: ["id", "company_url", "is_enabled", "is_prospect", "is_web_scraped",
+              column_list: ["id", "url", "is_enabled", "is_prospect", "is_web_scraped",
               "job_board_provider", "board_token"]
         columns:
         - name: id
-          description: Serial ID created by Postgres upon insertion.
+          description: serial id created by postgres upon insertion
           tests:
             - unique
             - not_null
-        - name: company_url
-          description: Careers page to be scraped.
+        - name: url
+          description: careers page to be scraped
           tests:
             - unique
             - not_null
         - name: is_enabled
-          description: Boolean flag determining whether we are scraping this URL in daily runs.
+          description: boolean flag determining whether we are scraping this url in our daily runs
         - name: is_prospect
-          description: Boolean flag determining whether the company is a Prospect company.
+          description: boolean flag determining whether or not the company is a Prospect company
         - name: is_web_scraped
-          description: True if using the Scrapy script; otherwise, false.
+          description: True if using the scrapy script, otherwise false?
         - name: job_board_provider
-          description: Company providing the job board.
+          description: Company is providing the job_board
         - name: board_token
-          description: Company of the jobs listed.
+          description: Company of the jobs listed
