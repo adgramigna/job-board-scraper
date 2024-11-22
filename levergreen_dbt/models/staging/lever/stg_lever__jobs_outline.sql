@@ -35,31 +35,27 @@ lever_outlines_by_levergreen_id as (
         ) as earliest_opening_link_row
     from convert_ts_to_date
     where earliest_levergreen_id_row = 1
-),
-
-final_select as (
-    select
-        concat(job_board,'_',id) as id,
-        levergreen_id,
-        created_at_utc,
-        updated_at_utc,
-        created_date_utc,
-        updated_date_utc,
-        source,
-        uses_existing,
-        raw_html_file_location, 
-        run_hash,
-        company_name,
-        coalesce(department_name, 'No Dept') as department_names,
-        coalesce(location, 'Unknown') as location,
-        office_ids,
-        full_opening_link as opening_link,
-        opening_title,
-        job_board
-    from
-        lever_outlines_by_levergreen_id
-    where
-        earliest_opening_link_row = 1
 )
 
-select * from final_select
+select
+    concat(job_board,'_',id) as id,
+    levergreen_id,
+    created_at_utc,
+    updated_at_utc,
+    created_date_utc,
+    updated_date_utc,
+    source,
+    uses_existing,
+    raw_html_file_location, 
+    run_hash,
+    department_names,
+    location,
+    workplace_type,
+    opening_link as full_opening_link,
+    opening_title,
+    company_name,
+    job_board
+from
+    lever_outlines_by_levergreen_id
+where
+    earliest_opening_link_row = 1
