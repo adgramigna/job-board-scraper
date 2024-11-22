@@ -28,6 +28,21 @@ jobs:
       - name: Install dbt dependencies
         run: cd levergreen_dbt && dbt deps
 
+      - name: Set up dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          echo "elementary:" > ~/.dbt/profiles.yml
+          echo "  outputs:" >> ~/.dbt/profiles.yml
+          echo "    dev:" >> ~/.dbt/profiles.yml
+          echo "      type: postgres" >> ~/.dbt/profiles.yml
+          echo "      host: ${{ secrets.PG_HOST }}" >> ~/.dbt/profiles.yml
+          echo "      user: ${{ secrets.PG_USER }}" >> ~/.dbt/profiles.yml
+          echo "      password: ${{ secrets.PG_PASSWORD }}" >> ~/.dbt/profiles.yml
+          echo "      dbname: ${{ secrets.PG_DATABASE }}" >> ~/.dbt/profiles.yml
+          echo "      schema: public" >> ~/.dbt/profiles.yml
+          echo "      threads: 1" >> ~/.dbt/profiles.yml
+          echo "  target: dev" >> ~/.dbt/profiles.yml
+
       - name: Run dbt models
         id: run_dbt_step
         run: cd levergreen_dbt && dbt run
