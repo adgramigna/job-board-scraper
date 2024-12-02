@@ -56,7 +56,6 @@ jobs:
 
       - name: Run Elementary
         if: ${{ always() && steps.run_dbt_step.conclusion == 'success'}}
-        working-directory: ./levergreen_dbt
         uses: elementary-data/run-elementary-action@v1.12
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
@@ -65,6 +64,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
         with:
           warehouse-type: postgres
+          profiles-dir: levergreen_dbt
           edr-command:
             edr send-report
               --aws-access-key-id "${{ secrets.AWS_ACCESS_KEY_ID }}"
