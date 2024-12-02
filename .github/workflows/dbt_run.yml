@@ -64,6 +64,7 @@ jobs:
           PG_USER: ${{ secrets.PG_USER }}
         with:
           warehouse-type: postgres
+          project-dir: levergreen_dbt
           profiles-dir: levergreen_dbt
           edr-command:
             edr send-report
