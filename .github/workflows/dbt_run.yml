@@ -56,8 +56,8 @@ jobs:
 
       - name: Run Elementary
         if: ${{ always() && steps.run_dbt_step.conclusion == 'success'}}
-        uses: elementary-data/run-elementary-action@v1.12
         working-directory: ./levergreen_dbt
+        uses: elementary-data/run-elementary-action@v1.12
         env:
           PG_DATABASE: ${{ secrets.PG_DATABASE }}
           PG_HOST: ${{ secrets.PG_HOST }}
