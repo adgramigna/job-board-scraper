@@ -1,6 +1,6 @@
 scrapy==2.10.1
 boto3==1.26.55
-elementary-data==0.16.1
+elementary-data==0.16.2
 python-dotenv==0.21.1
 hashids==1.3.1
 pyarrow==18.0.0
