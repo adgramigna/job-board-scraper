@@ -23,6 +23,9 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
+# Elementary temp flag
+flags:
+  require_explicit_package_overrides_for_builtin_materializations: false
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
