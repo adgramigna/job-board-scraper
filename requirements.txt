@@ -1,5 +1,5 @@
 scrapy==2.10.1
-boto3==1.26.55
+boto3==1.35.34
 elementary-data==0.16.1
 python-dotenv==0.21.1
 hashids==1.3.1
@@ -16,3 +16,4 @@ connectorx==0.4.0
 adbc-driver-postgresql==0.10.0
 numpy==1.26.4
 setuptools==71.1.0
+s3fs==2024.9.0
