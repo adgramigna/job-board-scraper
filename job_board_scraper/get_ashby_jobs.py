@@ -238,11 +238,21 @@ for i, url in enumerate(careers_page_urls):
         posting_json_record["location_id"] = record.locationId
         posting_json_record["location_name"] = record.locationName
         posting_json_record["employment_type"] = record.employmentType
-        posting_json_record["compensation_tier"] = record.compensationTierSummary
+        posting_json_record["compensation_tier"] = (
+            record.compensationTierSummary
+            if record.compensationTierSummary is not None
+            else ""
+        )
         all_postings_json.append(posting_json_record)
-
     # DuckDB calls
     ashby_postings = pl.DataFrame(all_postings_json)
+    ashby_postings = ashby_postings.with_columns(
+        pl.when(pl.col("compensation_tier") == "")
+        .then(None)
+        .otherwise(pl.col("compensation_tier"))
+        .alias("compensation_tier")
+    )
+    print(ashby_postings)
 
     if len(ashby_postings) > 0:
         ashby_postings_final = con.execute(
