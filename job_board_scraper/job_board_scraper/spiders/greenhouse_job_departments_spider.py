@@ -156,7 +156,7 @@ class GreenhouseJobDepartmentsSpider(scrapy.Spider):
         selector = Selector(text=response_html, type="html")
         if self.careers_page_url.split(".")[0].split("/")[-1] == "job-boards":
             all_departments = selector.xpath(
-                "//div[(@class='job-posts')]/*[starts-with(name(), 'h')]/text()"
+                "//div[(@class='job-posts--table--department')]/*[starts-with(name(), 'h')]/text()"
             )
             for i, department in enumerate(all_departments):
                 il = self.parse_job_boards_prefix(i, department)
